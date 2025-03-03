@@ -1,3 +1,2 @@
 # Event-Ticketing-System
-An online event ticketing system.
-This system will allow users to browse, search, and purchase tickets for various events such as concerts, sports games, theater shows, and more.
+The Online Event Ticketing System is a full-stack web application designed to facilitate event browsing, ticket booking, and event management. Users can search for events, view details, and purchase tickets, while event organizers can create and manage their own events. A system admin oversees user and event management. The platform features a homepage showcasing upcoming events, a ticket booking system, user dashboards, and an admin panel. The system is built using CRUD operations and integrates a MongoDB database to store event details, bookings, and user information.
