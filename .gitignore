@@ -17,7 +17,7 @@ yarn-error.log
 *.sqlite-journal
 mongodb.log
 
-# OS-specific files (Mac & Windows)
+
 .DS_Store
 Thumbs.db
 
