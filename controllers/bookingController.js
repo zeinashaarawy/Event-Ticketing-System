@@ -1,23 +1,16 @@
-// controllers/bookingController.js
-
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
 
-const bookTickets = async (req, res, next) => {
+// Book tickets for an event
+const bookTickets = async (req, res) => {
   const { eventId, quantity } = req.body;
 
   try {
     const event = await Event.findById(eventId);
-    if (!event) {
-      const error = new Error('Event not found');
-      error.statusCode = 404;
-      throw error;
-    }
+    if (!event) return res.status(404).json({ message: 'Event not found' });
 
     if (event.ticketsAvailable < quantity) {
-      const error = new Error('Not enough tickets available');
-      error.statusCode = 400; // Bad request
-      throw error;
+      return res.status(400).json({ message: 'Not enough tickets available' });
     }
 
     const totalPrice = event.ticketPrice * quantity;
@@ -34,7 +27,7 @@ const bookTickets = async (req, res, next) => {
 
     res.status(201).json({ message: 'Booking confirmed', booking });
   } catch (error) {
-    next(error); // Pass error to error handler
+    res.status(500).json({ message: 'Error booking tickets', error });
   }
 };
 
