@@ -9,7 +9,7 @@ const {
   deleteUser
 } = require('../controllers/userController');
 
-const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect, authorizeRoles } = require('../middleware/authentication');
 
 // Authenticated user routes
 router.get('/profile', protect, getProfile);
