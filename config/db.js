@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // config/db.js
 const mongoose = require('mongoose');
 
@@ -15,3 +16,22 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB; // Export the function
+=======
+// config/db.js
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ MongoDB Connected');
+  } catch (err) {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1); // Exit process if connection fails
+  }
+};
+
+module.exports = connectDB; // Export the function
+>>>>>>> 447231c998e7983f1aed623df73e3f453e480e23
