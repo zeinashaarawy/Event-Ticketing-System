@@ -1,41 +1,37 @@
-// controllers/eventController.js
-
 const Event = require('../models/Event');
 
-// Create Event
-const createEvent = async (req, res, next) => {
+// Create a new event
+const createEvent = async (req, res) => {
+  const { title, description, date, location, ticketsAvailable, ticketPrice } = req.body;
+
   try {
     const event = new Event({
-      title: req.body.title,
-      description: req.body.description,
-      date: req.body.date,
-      location: req.body.location,
-      ticketsAvailable: req.body.ticketsAvailable,
-      ticketPrice: req.body.ticketPrice,
+      title,
+      description,
+      date,
+      location,
+      ticketsAvailable,
+      ticketPrice,
       status: 'pending',
-      organizer: req.user.id,
+      organizer: req.user.id,  // Get the organizer from the JWT payload (user ID)
     });
 
     await event.save();
     res.status(201).json(event);
   } catch (error) {
-    next(error); // Pass error to error handler
+    res.status(500).json({ message: 'Error creating event', error });
   }
 };
 
-// Get Event by ID
-const getEventById = async (req, res, next) => {
+// Get event details by ID
+const getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
-    if (!event) {
-      const error = new Error('Event not found');
-      error.statusCode = 404; // Set custom status code for "Not Found"
-      throw error;
-    }
+    if (!event) return res.status(404).json({ message: 'Event not found' });
 
     res.status(200).json(event);
   } catch (error) {
-    next(error); // Pass error to error handler
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
