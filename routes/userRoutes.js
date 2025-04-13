@@ -1,15 +1,22 @@
 const express = require('express');
 const router = express.Router();
+
 const {
   getProfile,
   updateProfile,
   getAllUsers,
   getUserById,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  login,        
+  registerUser,
 } = require('../controllers/userController');
 
 const { protect, authorizeRoles } = require('../middleware/authentication');
+
+// Public routes
+router.post('/register', registerUser);
+router.post('/login', login); 
 
 // Authenticated user routes
 router.get('/profile', protect, getProfile);
