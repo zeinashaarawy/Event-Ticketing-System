@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { protect, restrictTo } = require('../middleware/authMiddleware');
+const { protect, restrictTo } = require('../middleware/authentication');
 const {
   bookTickets,
   getUserBookings,
