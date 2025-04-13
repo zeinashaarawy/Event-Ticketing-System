@@ -1,50 +1,41 @@
-exports.bookTickets = async (req, res) => {
+// controllers/bookingController.js
+
+const Event = require('../models/Event');
+const Booking = require('../models/Booking');
+
+const bookTickets = async (req, res, next) => {
+  const { eventId, quantity } = req.body;
+
   try {
-    const { eventId, quantity } = req.body;
     const event = await Event.findById(eventId);
-    if (!event || event.status !== 'approved') {
-      return res.status(404).json({ error: 'Event not found or not approved' });
+    if (!event) {
+      const error = new Error('Event not found');
+      error.statusCode = 404;
+      throw error;
     }
-    if (event.availableTickets < quantity) {
-      return res.status(400).json({ error: 'Insufficient tickets' });
+
+    if (event.ticketsAvailable < quantity) {
+      const error = new Error('Not enough tickets available');
+      error.statusCode = 400; // Bad request
+      throw error;
     }
-    event.availableTickets -= quantity;
-    await event.save();
-    const totalPrice = quantity * event.ticketPrice;
+
+    const totalPrice = event.ticketPrice * quantity;
     const booking = new Booking({
       user: req.user.id,
       event: eventId,
       quantity,
       totalPrice,
     });
-    await booking.save();
-    res.status(201).json(booking);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
 
-exports.cancelBooking = async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id);
-    if (!booking || booking.user.toString() !== req.user.id) {
-      return res.status(404).json({ error: 'Booking not found' });
-    }
-    const event = await Event.findById(booking.event);
-    event.availableTickets += booking.quantity;
+    event.ticketsAvailable -= quantity; // Update event ticket availability
     await event.save();
-    await booking.remove();
-    res.json({ message: 'Booking cancelled' });
+    await booking.save();
+
+    res.status(201).json({ message: 'Booking confirmed', booking });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    next(error); // Pass error to error handler
   }
 };
 
-exports.getUserBookings = async (req, res) => {
-  try {
-    const bookings = await Booking.find({ user: req.user.id }).populate('event');
-    res.json(bookings);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+module.exports = { bookTickets };
