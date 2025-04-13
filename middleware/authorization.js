@@ -1,10 +1,10 @@
-module.exports= function authorizationMiddleware(roles) {
-    return (req, res, next) => {
-      console.log('req:',req.user)
-      const userRole = req.user.role;
-      if (!roles.includes(userRole))
-        return res.status(403).json("unauthorized access");
-      // console.log('authormid')
-      next();
-    };
-  }
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden, you don’t have permission to perform this action' });
+    }
+    next(); // User has the required role, continue
+  };
+};
+
+module.exports = { authorize };
