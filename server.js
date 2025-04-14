@@ -4,7 +4,7 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 
 // Import routes
-const userRoutes = require('./routes/userRoutes'); // 👈 adjust path if different
+const userRoutes = require('./routes/userRoutes');
 
 dotenv.config();
 connectDB();

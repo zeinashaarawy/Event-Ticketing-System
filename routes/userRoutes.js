@@ -8,24 +8,26 @@ const {
   getUserById,
   updateUserRole,
   deleteUser,
-  login,        
+  login,
   registerUser,
+  forgetPassword
 } = require('../controllers/userController');
 
 const { protect, authorizeRoles } = require('../middleware/authentication');
 
 // Public routes
 router.post('/register', registerUser);
-router.post('/login', login); 
+router.post('/login', login);
+router.put('/forgetPassword', forgetPassword);
 
 // Authenticated user routes
-router.get('/profile', protect, getProfile);
-router.put('/profile', protect, updateProfile);
+router.get('/users/profile', protect, getProfile);
+router.put('/users/profile', protect, updateProfile);
 
 // Admin-only routes
-router.get('/', protect, authorizeRoles('admin'), getAllUsers);
-router.get('/:id', protect, authorizeRoles('admin'), getUserById);
-router.put('/:id', protect, authorizeRoles('admin'), updateUserRole);
-router.delete('/:id', protect, authorizeRoles('admin'), deleteUser);
+router.get('/users', protect, authorizeRoles('admin'), getAllUsers);
+router.get('/users/:id', protect, authorizeRoles('admin'), getUserById);
+router.put('/users/:id', protect, authorizeRoles('admin'), updateUserRole);
+router.delete('/users/:id', protect, authorizeRoles('admin'), deleteUser);
 
 module.exports = router;
