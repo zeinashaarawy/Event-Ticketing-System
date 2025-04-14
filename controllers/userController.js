@@ -92,8 +92,10 @@ const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json(user);
+
+    res.status(200).json(user);
   } catch (err) {
+    console.error('Get profile error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -108,8 +110,18 @@ const updateProfile = async (req, res) => {
     user.email = req.body.email || user.email;
 
     await user.save();
-    res.json({ message: 'Profile updated', user });
+
+    res.status(200).json({
+      message: 'Profile updated',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    });
   } catch (err) {
+    console.error('Update profile error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -117,9 +129,10 @@ const updateProfile = async (req, res) => {
 // @desc    Get all users (admin only)
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password');
-    res.json(users);
+    const users = await User.find().select('-password'); // exclude passwords
+    res.status(200).json(users);
   } catch (err) {
+    console.error('Get all users error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -163,6 +176,30 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// @desc    Update password without login (simple forget password)
+// @route   PUT /api/v1/forgetPassword
+// @access  Public
+const forgetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.password = newPassword; // Will be hashed by the pre-save hook
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('Forget password error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 module.exports = {
   registerUser,
   login,
@@ -172,4 +209,5 @@ module.exports = {
   getUserById,
   updateUserRole,
   deleteUser,
+  forgetPassword
 };
