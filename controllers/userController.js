@@ -2,14 +2,12 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Helper: Generate JWT
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 };
 
-// @desc    Register a new user
 const registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -45,7 +43,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-// @desc    Login a user and return JWT token
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -87,7 +84,6 @@ if (user) {
   }
 };
 
-// @desc    Get logged-in user's profile
 const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -100,7 +96,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-// @desc    Update user's own profile
 const updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -126,7 +121,6 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// @desc    Get all users (admin only)
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password'); // exclude passwords
@@ -137,7 +131,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// @desc    Get single user by ID (admin only)
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
@@ -148,37 +141,50 @@ const getUserById = async (req, res) => {
   }
 };
 
-// @desc    Update user role (admin only)
 const updateUserRole = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    user.role = req.body.role || user.role;
+    const oldRole = user.role;
+    const newRole = req.body.role;
+
+    console.log('Old Role:', oldRole);
+    console.log('New Role (from body):', newRole);
+
+    if (!newRole) {
+      return res.status(400).json({ message: 'No role provided' });
+    }
+
+    user.role = newRole;
     await user.save();
 
-    res.json({ message: 'User role updated', user });
+    console.log('Saved Role:', user.role);
+
+    res.json({
+      message: `User role updated from '${oldRole}' to '${newRole}'`,
+      user
+    });
   } catch (err) {
+    console.error('Update user role error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// @desc    Delete a user (admin only)
 const deleteUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findByIdAndDelete(req.params.id);
 
-    await user.remove();
-    res.json({ message: 'User deleted' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Failed to delete user', error: err.message });
   }
 };
 
-// @desc    Update password without login (simple forget password)
-// @route   PUT /api/v1/forgetPassword
-// @access  Public
 const forgetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -189,7 +195,7 @@ const forgetPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.password = newPassword; // Will be hashed by the pre-save hook
+    user.password = newPassword;
     await user.save();
 
     res.status(200).json({ message: 'Password updated successfully' });
