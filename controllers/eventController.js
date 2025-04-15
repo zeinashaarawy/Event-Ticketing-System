@@ -1,29 +1,26 @@
 const Event = require('../models/Event');
 
-// Create a new event
 const createEvent = async (req, res) => {
-  const { title, description, date, location, ticketsAvailable, ticketPrice } = req.body;
-
   try {
-    const event = new Event({
+    const { title, description, date, location, ticketsAvailable, ticketPrice } = req.body;
+
+    const event = await Event.create({
       title,
       description,
       date,
       location,
       ticketsAvailable,
       ticketPrice,
-      status: 'pending',
-      organizer: req.user.id,  // Get the organizer from the JWT payload (user ID)
+      organizer: req.user.id  
     });
 
-    await event.save();
-    res.status(201).json(event);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating event', error });
+    res.status(201).json({ message: 'Event created successfully', event });
+  } catch (err) {
+    console.error('Create event error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
-};
+}
 
-// Get event details by ID
 const getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -35,4 +32,85 @@ const getEventById = async (req, res) => {
   }
 };
 
-module.exports = { createEvent, getEventById };
+const getAllEvents = async (req, res) => {
+  try {
+    console.log('🔍 Fetching all events...');
+    const events = await Event.find();
+    console.log('✅ Events found:', events.length);
+    res.status(200).json(events);
+  } catch (err) {
+    console.error('❌ Get events error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
+const updateEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Optional: Check if user is the organizer or admin
+    if (
+      event.organizer.toString() !== req.user.id &&
+      req.user.role !== 'admin'
+    ) {
+      return res.status(403).json({ message: 'Not authorized to update this event' });
+    }
+
+    // Update fields
+    const fieldsToUpdate = [
+      'title', 'description', 'date', 'location',
+      'ticketsAvailable', 'ticketPrice', 'status'
+    ];
+
+    fieldsToUpdate.forEach(field => {
+      if (req.body[field] !== undefined) {
+        event[field] = req.body[field];
+      }
+    });
+
+    const updated = await event.save();
+
+    res.status(200).json({
+      message: 'Event updated successfully',
+      event: updated
+    });
+
+  } catch (error) {
+    console.error('Update event error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const deleteEvent = async (req, res) => {
+  try {
+    console.log('🔍 Trying to delete event with ID:', req.params.id); // Debugging log
+
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Only organizer or admin can delete
+    if (
+      event.organizer.toString() !== req.user.id &&
+      req.user.role !== 'admin'
+    ) {
+      return res.status(403).json({ message: 'Not authorized to delete this event' });
+    }
+
+    await event.deleteOne();
+
+    res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+module.exports = { createEvent, getEventById, getAllEvents, updateEvent, deleteEvent };
