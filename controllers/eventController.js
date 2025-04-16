@@ -12,6 +12,7 @@ const createEvent = async (req, res) => {
       ticketsAvailable,
       ticketPrice,
       organizer: req.user.id  
+      status: 'pending'
     });
 
     res.status(201).json({ message: 'Event created successfully', event });
