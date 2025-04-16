@@ -10,8 +10,9 @@ const {
   deleteUser,
   login,
   registerUser,
-  forgetPassword
-} = require('../controllers/userController');
+  forgetPassword ,getMyEvents,
+  getMyEventAnalytics
+} = require('../controllers/eventController');
 
 const { protect, authorizeRoles } = require('../middleware/authentication');
 
@@ -29,5 +30,9 @@ router.get('/users', protect, authorizeRoles('admin'), getAllUsers);
 router.get('/users/:id', protect, authorizeRoles('admin'), getUserById);
 router.put('/users/:id', protect, authorizeRoles('admin'), updateUserRole);
 router.delete('/users/:id', protect, authorizeRoles('admin'), deleteUser);
+
+// Organizer-only
+router.get('/users/events', protect, authorizeRoles('organizer'), getMyEvents);
+router.get('/users/events/analytics', protect, authorizeRoles('organizer'), getMyEventAnalytics);
 
 module.exports = router;
