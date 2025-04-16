@@ -52,6 +52,36 @@ const getUserBookings = async (req, res) => {
   }
 };
 
+// Get booking details by ID
+const getBookingDetails = async (req, res) => {
+  try {
+    const booking = await Booking.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    }).populate('event');
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    res.status(200).json({ booking });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to get booking details', error: error.message });
+  }
+};
+
+// Cancel a booking
+const cancelBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found or already cancelled' });
+    }
+
 module.exports = {
   bookTickets,
   getUserBookings,
