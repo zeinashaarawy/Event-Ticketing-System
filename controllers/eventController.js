@@ -112,5 +112,40 @@ const deleteEvent = async (req, res) => {
   }
 };
 
+const getMyEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user.id });
+    res.status(200).json(events);
+  } catch (err) {
+    console.error('Get my events error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+const getMyEventAnalytics = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user.id });
 
-module.exports = { createEvent, getEventById, getAllEvents, updateEvent, deleteEvent };
+    const totalEvents = events.length;
+    const totalTickets = events.reduce((sum, e) => sum + e.ticketsAvailable, 0);
+    const totalRevenue = events.reduce((sum, e) => sum + (e.ticketPrice * e.ticketsAvailable), 0);
+
+    res.status(200).json({
+      totalEvents,
+      totalTickets,
+      estimatedRevenue: totalRevenue
+    });
+  } catch (err) {
+    console.error('Event analytics error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = {
+  createEvent,
+  getEventById,
+  getAllEvents,
+  updateEvent,
+  deleteEvent,
+  getMyEvents,
+  getMyEventAnalytics
+};
