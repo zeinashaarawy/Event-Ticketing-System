@@ -125,14 +125,19 @@ const getMyEventAnalytics = async (req, res) => {
   try {
     const events = await Event.find({ organizer: req.user.id });
 
-    const totalEvents = events.length;
-    const totalTickets = events.reduce((sum, e) => sum + e.ticketsAvailable, 0);
-    const totalRevenue = events.reduce((sum, e) => sum + (e.ticketPrice * e.ticketsAvailable), 0);
+    const analytics = events.map(event => {
+      const percentageBooked = event.ticketsAvailable === 0 ? 0
+        : Math.round((event.ticketsBooked / event.ticketsAvailable) * 100);
+
+      return {
+        eventTitle: event.title,
+        status: event.status
+      };
+    });
 
     res.status(200).json({
-      totalEvents,
-      totalTickets,
-      estimatedRevenue: totalRevenue
+      message: 'Analytics fetched successfully',
+      analytics
     });
   } catch (err) {
     console.error('Event analytics error:', err);
