@@ -11,8 +11,10 @@ const {
   login,
   registerUser,
   forgetPassword ,getMyEvents,
-  getMyEventAnalytics
+  getMyEventAnalytics,
+  changeEventStatus
 } = require('../controllers/eventController');
+
 
 const { protect, authorizeRoles } = require('../middleware/authentication');
 
@@ -34,5 +36,7 @@ router.delete('/users/:id', protect, authorizeRoles('admin'), deleteUser);
 // Organizer-only
 router.get('/users/events', protect, authorizeRoles('organizer'), getMyEvents);
 router.get('/users/events/analytics', protect, authorizeRoles('organizer'), getMyEventAnalytics);
+// Admin approves or rejects event
+router.put('/events/:id/status', protect, authorizeRoles('admin'), changeEventStatus);
 
 module.exports = router;
