@@ -144,6 +144,26 @@ const getMyEventAnalytics = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const changeEventStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const event = await Event.findById(req.params.id);
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    if (!['approved', 'pending', 'declined'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    event.status = status;
+    await event.save();
+
+    res.status(200).json({ message: `Event status updated to '${status}'`, event });
+  } catch (err) {
+    console.error('Change status error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
   createEvent,
