@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
+
 
 // Book tickets for an event
 const bookTickets = async (req, res) => {
@@ -31,21 +33,51 @@ const bookTickets = async (req, res) => {
   }
 };
 
+const getUserBookings = async (req, res) => {
+  try {
+    // Find all bookings for the current user (using req.user.id)
+    const bookings = await Booking.find({ user: req.user.id }).populate('event');
+
+    // If no bookings are found
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for this user' });
+    }
+
+    // Send the list of bookings as the response
+    res.status(200).json({ bookings });
+  } catch (error) {
+    // Handle any server errors
+    res.status(500).json({ message: 'Error fetching user bookings', error: error.message });
+  }
+};
+
 // Get booking details by ID
 const getBookingDetails = async (req, res) => {
   try {
+    const bookingId = req.params.id;
+
+    // Check if the booking ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+      return res.status(400).json({ message: 'Invalid booking ID' });
+    }
+
+    // Fetch booking details by ID and user
     const booking = await Booking.findOne({
-      _id: req.params.id,
-      user: req.user.id,
-    }).populate('event');
+      _id: bookingId,
+      user: req.user.id,  // Ensures the user is the one making the request
+    }).populate('event');  // Populate event details if needed
 
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
+    // Return the booking details
     res.status(200).json({ booking });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to get booking details', error: error.message });
+    res.status(500).json({
+      message: 'Failed to get booking details',
+      error: error.message,
+    });
   }
 };
 
@@ -76,6 +108,7 @@ const cancelBooking = async (req, res) => {
 
 module.exports = {
   bookTickets,
+  getUserBookings,
+  getBookingDetails,
   cancelBooking,
-  getBookingDetails
 };
