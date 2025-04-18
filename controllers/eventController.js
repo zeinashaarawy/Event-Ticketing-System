@@ -12,6 +12,7 @@ const createEvent = async (req, res) => {
       ticketsAvailable,
       ticketPrice,
       organizer: req.user.id  
+      status: 'pending'
     });
 
     res.status(201).json({ message: 'Event created successfully', event });
@@ -112,5 +113,65 @@ const deleteEvent = async (req, res) => {
   }
 };
 
+const getMyEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user.id });
+    res.status(200).json(events);
+  } catch (err) {
+    console.error('Get my events error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+const getMyEventAnalytics = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user.id });
 
-module.exports = { createEvent, getEventById, getAllEvents, updateEvent, deleteEvent };
+    const analytics = events.map(event => {
+      const percentageBooked = event.ticketsAvailable === 0 ? 0
+        : Math.round((event.ticketsBooked / event.ticketsAvailable) * 100);
+
+      return {
+        eventTitle: event.title,
+        status: event.status
+      };
+    });
+
+    res.status(200).json({
+      message: 'Analytics fetched successfully',
+      analytics
+    });
+  } catch (err) {
+    console.error('Event analytics error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+const changeEventStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const event = await Event.findById(req.params.id);
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    if (!['approved', 'pending', 'declined'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    event.status = status;
+    await event.save();
+
+    res.status(200).json({ message: `Event status updated to '${status}'`, event });
+  } catch (err) {
+    console.error('Change status error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = {
+  createEvent,
+  getEventById,
+  getAllEvents,
+  updateEvent,
+  deleteEvent,
+  getMyEvents,
+  getMyEventAnalytics
+};
