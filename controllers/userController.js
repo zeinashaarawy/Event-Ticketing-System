@@ -1,9 +1,10 @@
-const User = require('../models/User');
+const User = require('../models/user');
+const Event = require('../models/Event')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role}, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 };
@@ -121,10 +122,14 @@ const updateProfile = async (req, res) => {
   }
 };
 
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password'); // exclude passwords
-    res.status(200).json(users);
+    res.status(200).json({
+      success: true,
+      users
+    });
   } catch (err) {
     console.error('Get all users error:', err);
     res.status(500).json({ message: 'Server error' });
@@ -204,6 +209,86 @@ const forgetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const getOrganizerEvents = async (req, res) => {
+  try {
+    
+    const organizerId = req.user.id; 
+    const events = await Event.find({ organizer: organizerId }); 
+    if (!events || events.length === 0) {
+      return res.status(404).json({ message: 'No events found for this organizer' });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: events.length,
+      events,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching events',
+      error: error.message,
+    });
+  }
+};
+
+const getEventAnalytics = async (req, res) => {
+  try {
+    const organizerId = req.user.id;
+    const events = await Event.find({ organizer: organizerId });
+
+    if (!events || events.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          totalEvents: 0,
+          totalTicketsSold: 0,
+          totalRevenue: 0,
+          upcomingEvents: []
+        }
+      });
+    }
+
+    const totalTicketsSold = events.reduce((total, event) => {
+      const remaining = event.remainingTickets ?? event.ticketsAvailable; // fallback
+      const sold = Math.max(event.ticketsAvailable - remaining, 0);
+      return total + sold;
+    }, 0);
+    //total revenu = The total amount of money earned by the organizer from ticket sales
+    const totalRevenue = events.reduce((total, event) => {
+      const remaining = event.remainingTickets ?? event.ticketsAvailable;
+      const sold = Math.max(event.ticketsAvailable - remaining, 0);
+      return total + (event.ticketPrice * sold);
+    }, 0);
+
+    const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalEvents: events.length,
+        totalTicketsSold,
+        totalRevenue,
+        upcomingEvents: upcomingEvents.map(event => ({
+          title: event.title,
+          date: event.date,
+          ticketsAvailable: event.ticketsAvailable
+        }))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching analytics',
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
 
 
 module.exports = {
@@ -215,5 +300,7 @@ module.exports = {
   getUserById,
   updateUserRole,
   deleteUser,
-  forgetPassword
+  forgetPassword,
+  getOrganizerEvents, 
+  getEventAnalytics
 };
