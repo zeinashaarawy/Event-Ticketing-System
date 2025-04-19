@@ -42,6 +42,7 @@ const getApprovedEvents = async (req, res) => {
   }
 };
 
+
 const getAllEvents = async (req, res) => {
   try {
     const events = await Event.find();
