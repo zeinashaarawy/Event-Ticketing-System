@@ -26,7 +26,7 @@ const createEvent = async (req, res) => {
 
 const getApprovedEvents = async (req, res) => {
   try {
-    const approvedEvents = await Event.find({ status: 'approved' });
+    const approvedEvents = await Event.find({ status : 'approved' });
 
     res.status(200).json({
       success: true,
@@ -136,6 +136,9 @@ const deleteEvent = async (req, res) => {
     });
   }
 };
+
+
+
 
 
 module.exports = { createEvent, 
