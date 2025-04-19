@@ -1,14 +1,19 @@
-// server.js
+const path = require('path');
+require('dotenv').config({ 
+  path: path.resolve(__dirname, '../.env.js')  // Absolute path
+});
 
-require('dotenv').config();    // only once, loads .env from project root
+
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 
-const userRoutes    = require('./routes/userRoutes');
+// Import routes
+const userRoutes = require('./routes/userRoutes'); 
 const bookingRoutes = require('./routes/bookingRoutes');
-const eventRoutes   = require('./routes/eventRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
+dotenv.config();
 connectDB();
 
 const app = express();

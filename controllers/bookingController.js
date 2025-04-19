@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Event = require('../models/Event');
 const Booking = require('../models/Booking');
+
 
 // Book tickets for an event
 const bookTickets = async (req, res) => {
@@ -31,4 +33,65 @@ const bookTickets = async (req, res) => {
   }
 };
 
-module.exports = { bookTickets };
+
+
+// Get booking details by ID
+const getBookingDetails = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    // Check if the booking ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+      return res.status(400).json({ message: 'Invalid booking ID' });
+    }
+
+    // Fetch booking details by ID and user
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      user: req.user.id,  // Ensures the user is the one making the request
+    }).populate('event');  // Populate event details if needed
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    // Return the booking details
+    res.status(200).json({ booking });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to get booking details',
+      error: error.message,
+    });
+  }
+};
+
+// Cancel a booking
+const cancelBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found or already cancelled' });
+    }
+
+    const event = await Event.findById(booking.event);
+    if (event) {
+      event.availableTickets += booking.quantity;
+      await event.save();
+    }
+
+    res.status(200).json({ message: 'Booking cancelled successfully' });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to cancel booking', error: error.message });
+  }
+};
+
+module.exports = {
+  bookTickets,
+  getBookingDetails,
+  cancelBooking,
+};
