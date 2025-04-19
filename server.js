@@ -13,6 +13,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes'); 
 const bookingRoutes = require('./routes/bookingRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 connectDB();
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
 
 //  Mount user routes 
 app.use('/api/v1/users' , userRoutes);
-app.use('/api/v1', userRoutes);
+ app.use('/api/v1', authRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/events', eventRoutes);
 
