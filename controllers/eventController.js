@@ -26,7 +26,7 @@ const createEvent = async (req, res) => {
 
 const getApprovedEvents = async (req, res) => {
   try {
-    const approvedEvents = await Event.find({ isApproved: true });
+    const approvedEvents = await Event.find({ status: 'approved' });
 
     res.status(200).json({
       success: true,
@@ -41,6 +41,7 @@ const getApprovedEvents = async (req, res) => {
     });
   }
 };
+
 
 const getAllEvents = async (req, res) => {
   try {

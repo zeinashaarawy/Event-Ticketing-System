@@ -1,20 +1,14 @@
-const path = require('path');
-require('dotenv').config({ 
-  path: path.resolve(__dirname, '../.env.js')  // Absolute path
-});
+// server.js
 
-
+require('dotenv').config();    // only once, loads .env from project root
 const express = require('express');
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
 
-// Import routes
-const userRoutes = require('./routes/userRoutes'); 
+const userRoutes    = require('./routes/userRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const eventRoutes = require('./routes/eventRoutes');
+const eventRoutes   = require('./routes/eventRoutes');
 
-dotenv.config();
 connectDB();
 
 const app = express();
@@ -25,12 +19,9 @@ app.get('/', (req, res) => {
   res.send('Backend is running and connected to Atlas!');
 });
 
-//  Mount user routes 
-app.use('/api/v1/users' , userRoutes);
-app.use('/api/v1', userRoutes);
+app.use('/api/v1/users',    userRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
-app.use('/api/v1/events', eventRoutes);
-
+app.use('/api/v1/events',   eventRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
