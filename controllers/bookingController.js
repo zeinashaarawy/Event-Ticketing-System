@@ -33,23 +33,7 @@ const bookTickets = async (req, res) => {
   }
 };
 
-const getUserBookings = async (req, res) => {
-  try {
-    // Find all bookings for the current user (using req.user.id)
-    const bookings = await Booking.find({ user: req.user.id }).populate('event');
 
-    // If no bookings are found
-    if (!bookings || bookings.length === 0) {
-      return res.status(404).json({ message: 'No bookings found for this user' });
-    }
-
-    // Send the list of bookings as the response
-    res.status(200).json({ bookings });
-  } catch (error) {
-    // Handle any server errors
-    res.status(500).json({ message: 'Error fetching user bookings', error: error.message });
-  }
-};
 
 // Get booking details by ID
 const getBookingDetails = async (req, res) => {
@@ -108,7 +92,6 @@ const cancelBooking = async (req, res) => {
 
 module.exports = {
   bookTickets,
-  getUserBookings,
   getBookingDetails,
   cancelBooking,
 };
