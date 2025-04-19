@@ -87,6 +87,7 @@ if (user) {
 
 const forgetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
+  //console.log("newPassword:", newPassword);
 
   try {
     const user = await User.findOne({ email });
