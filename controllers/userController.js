@@ -1,5 +1,6 @@
 const User = require('../models/user');
-const Event = require('../models/Event')
+const Event = require('../models/Event');
+const Booking = require('../models/Booking');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -285,6 +286,21 @@ const getEventAnalytics = async (req, res) => {
   }
 };
 
+// Get bookings for the current user
+const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.user.id }).populate('event');
+    
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ success: false, message: 'No bookings found for this user' });
+    }
+
+    return res.status(200).json({ success: true, bookings });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error fetching bookings', error: error.message });
+  }
+};
+
 
 
 
@@ -302,5 +318,6 @@ module.exports = {
   deleteUser,
   forgetPassword,
   getOrganizerEvents, 
-  getEventAnalytics
+  getEventAnalytics, 
+  getUserBookings
 };
