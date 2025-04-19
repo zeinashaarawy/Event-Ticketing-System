@@ -7,7 +7,9 @@ const cors = require('cors');
 
 const userRoutes    = require('./routes/userRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const eventRoutes   = require('./routes/eventRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const authRoutes = require('./routes/authRoutes');
+
 
 connectDB();
 
@@ -19,7 +21,11 @@ app.get('/', (req, res) => {
   res.send('Backend is running and connected to Atlas!');
 });
 
-app.use('/api/v1/users',    userRoutes);
+
+//  Mount user routes 
+app.use('/api/v1/users' , userRoutes);
+ app.use('/api/v1', authRoutes);
+
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/events',   eventRoutes);
 
