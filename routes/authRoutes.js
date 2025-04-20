@@ -9,7 +9,8 @@ router.post('/register', registerUser);
 // User login
 router.post('/login', login);
 
-// Forget password - generate OTP (no email sending)
+
+// Forget password - send OTP
 router.put('/forgetPassword', forgetPassword);
 
 // Verify OTP and reset password

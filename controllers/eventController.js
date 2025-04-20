@@ -1,26 +1,59 @@
 const Event = require('../models/Event');
 
+// Create a new event
 const createEvent = async (req, res) => {
-  try {
-    const { title, description, date, location, ticketsAvailable, ticketPrice } = req.body;
+  const { title, description, date, location, ticketsAvailable, ticketPrice } = req.body;
 
-    const event = await Event.create({
+  try {
+    const event = new Event({
       title,
       description,
       date,
       location,
       ticketsAvailable,
       ticketPrice,
-      organizer: req.user.id  
+      status: 'pending',
+      organizer: req.user.id,  // Get the organizer from the JWT payload (user ID)
     });
 
-    res.status(201).json({ message: 'Event created successfully', event });
-  } catch (err) {
-    console.error('Create event error:', err);
-    res.status(500).json({ message: 'Server error' });
+    await event.save();
+    res.status(201).json(event);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating event', error });
   }
-}
+};
 
+
+const getApprovedEvents = async (req, res) => {
+  try {
+    const approvedEvents = await Event.find({ status : 'approved' });
+
+    res.status(200).json({
+      success: true,
+      count: approvedEvents.length,
+      data: approvedEvents
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch approved events',
+      error: error.message
+    });
+  }
+};
+
+
+const getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.status(200).json({ success: true, events });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error });
+  }
+};
+
+
+// Get event details by ID
 const getEventById = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -32,120 +65,86 @@ const getEventById = async (req, res) => {
   }
 };
 
-const getAllEvents = async (req, res) => {
-  try {
-    console.log('🔍 Fetching all events...');
-    const events = await Event.find();
-    console.log('✅ Events found:', events.length);
-    res.status(200).json(events);
-  } catch (err) {
-    console.error('❌ Get events error:', err);
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-
+// Update event details
 const updateEvent = async (req, res) => {
+  const { title, description, date, location, ticketsAvailable, ticketPrice, status } = req.body;
+
   try {
-    const event = await Event.findById(req.params.id);
+    // Find the event by its ID
+    let event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    // Optional: Check if user is the organizer or admin
-    if (
-      event.organizer.toString() !== req.user.id &&
-      req.user.role !== 'admin'
-    ) {
-      return res.status(403).json({ message: 'Not authorized to update this event' });
+    // Optional: Check if the user is the organizer of the event or an admin
+    if (event.organizer.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'You are not authorized to update this event' });
     }
 
-    // Update fields
-    const fieldsToUpdate = [
-      'title', 'description', 'date', 'location',
-      'ticketsAvailable', 'ticketPrice', 'status'
-    ];
+    // Update fields (organizer can update all except status)
+    event.title = title || event.title;
+    event.description = description || event.description;
+    event.date = date || event.date;
+    event.location = location || event.location;
+    event.ticketsAvailable = ticketsAvailable || event.ticketsAvailable;
+    event.ticketPrice = ticketPrice || event.ticketPrice;
 
-    fieldsToUpdate.forEach(field => {
-      if (req.body[field] !== undefined) {
-        event[field] = req.body[field];
-      }
-    });
+    // Only allow admins to update the status
+    if (status && req.user.role === 'admin') {
+      event.status = status;
+    }
 
-    const updated = await event.save();
+    // Save the updated event
+    await event.save();
 
     res.status(200).json({
+      success: true,
       message: 'Event updated successfully',
-      event: updated
+      event,
     });
-
   } catch (error) {
-    console.error('Update event error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating event',
+      error: error.message,
+    });
   }
 };
 
+
+// Delete an event by ID
 const deleteEvent = async (req, res) => {
   try {
-    console.log('🔍 Trying to delete event with ID:', req.params.id); // Debugging log
-
-    const event = await Event.findById(req.params.id);
+    // Find and delete the event by ID
+    const event = await Event.findByIdAndDelete(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    // Only organizer or admin can delete
-    if (
-      event.organizer.toString() !== req.user.id &&
-      req.user.role !== 'admin'
-    ) {
-      return res.status(403).json({ message: 'Not authorized to delete this event' });
-    }
-
-    await event.deleteOne();
-
-    res.status(200).json({ message: 'Event deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-
-const getMyEvents = async (req, res) => {
-  try {
-    const events = await Event.find({ organizer: req.user.id });
-    res.status(200).json(events);
-  } catch (err) {
-    console.error('Get my events error:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-const getMyEventAnalytics = async (req, res) => {
-  try {
-    const events = await Event.find({ organizer: req.user.id });
-
-    const totalEvents = events.length;
-    const totalTickets = events.reduce((sum, e) => sum + e.ticketsAvailable, 0);
-    const totalRevenue = events.reduce((sum, e) => sum + (e.ticketPrice * e.ticketsAvailable), 0);
-
     res.status(200).json({
-      totalEvents,
-      totalTickets,
-      estimatedRevenue: totalRevenue
+      success: true,
+      message: 'Event deleted successfully',
+      event,
     });
-  } catch (err) {
-    console.error('Event analytics error:', err);
-    res.status(500).json({ message: 'Server error' });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting event',
+      error: error.message,
+    });
   }
 };
 
-module.exports = {
-  createEvent,
-  getEventById,
+
+
+
+
+module.exports = { createEvent, 
+  getEventById , 
+  getApprovedEvents, 
   getAllEvents,
-  updateEvent,
-  deleteEvent,
-  getMyEvents,
-  getMyEventAnalytics
-};
+  updateEvent, 
+  deleteEvent
+ };

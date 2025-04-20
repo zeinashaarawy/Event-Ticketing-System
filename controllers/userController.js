@@ -1,88 +1,9 @@
 const User = require('../models/User');
+const Event = require('../models/Event');
+const Booking = require('../models/Booking');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
-  });
-};
-
-const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
-
-  try {
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-
-    const user = await User.create({
-      name,
-      email,
-      password: password,
-      role: role || 'user',
-    });
-
-    const token = generateToken(user);
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-const login = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(400).json({ message: 'User not found' });
-    }
-    console.log('Attempt login for:', email);
-console.log('User found:', user ? true : false);
-
-if (user) {
-  const isMatch = await bcrypt.compare(password, user.password);
-  console.log('Password match:', isMatch);
-}
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-
-    const token = generateToken(user);
-
-    res.status(200).json({
-      message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
 
 const getProfile = async (req, res) => {
   try {
@@ -121,10 +42,14 @@ const updateProfile = async (req, res) => {
   }
 };
 
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password'); // exclude passwords
-    res.status(200).json(users);
+    res.status(200).json({
+      success: true,
+      users
+    });
   } catch (err) {
     console.error('Get all users error:', err);
     res.status(500).json({ message: 'Server error' });
@@ -185,35 +110,107 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const forgetPassword = async (req, res) => {
-  const { email, newPassword } = req.body;
 
+const getOrganizerEvents = async (req, res) => {
   try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    
+    const organizerId = req.user.id; 
+    const events = await Event.find({ organizer: organizerId }); 
+    if (!events || events.length === 0) {
+      return res.status(404).json({ message: 'No events found for this organizer' });
     }
 
-    user.password = newPassword;
-    await user.save();
+    res.status(200).json({
+      success: true,
+      count: events.length,
+      events,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching events',
+      error: error.message,
+    });
+  }
+};
 
-    res.status(200).json({ message: 'Password updated successfully' });
-  } catch (err) {
-    console.error('Forget password error:', err);
-    res.status(500).json({ message: 'Server error' });
+const getEventAnalytics = async (req, res) => {
+  try {
+    const organizerId = req.user.id;
+    const events = await Event.find({ organizer: organizerId });
+
+    if (!events || events.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          totalEvents: 0,
+          totalTicketsSold: 0,
+          totalRevenue: 0,
+          upcomingEvents: []
+        }
+      });
+    }
+
+    const totalTicketsSold = events.reduce((total, event) => {
+      const remaining = event.remainingTickets ?? event.ticketsAvailable; // fallback
+      const sold = Math.max(event.ticketsAvailable - remaining, 0);
+      return total + sold;
+    }, 0);
+    //total revenu = The total amount of money earned by the organizer from ticket sales
+    const totalRevenue = events.reduce((total, event) => {
+      const remaining = event.remainingTickets ?? event.ticketsAvailable;
+      const sold = Math.max(event.ticketsAvailable - remaining, 0);
+      return total + (event.ticketPrice * sold);
+    }, 0);
+
+    const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalEvents: events.length,
+        totalTicketsSold,
+        totalRevenue,
+        upcomingEvents: upcomingEvents.map(event => ({
+          title: event.title,
+          date: event.date,
+          ticketsAvailable: event.ticketsAvailable
+        }))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching analytics',
+      error: error.message,
+    });
+  }
+};
+
+// Get bookings for the current user
+const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.user.id }).populate('event');
+    
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ success: false, message: 'No bookings found for this user' });
+    }
+
+    return res.status(200).json({ success: true, bookings });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Error fetching bookings', error: error.message });
   }
 };
 
 
 module.exports = {
-  registerUser,
-  login,
   getProfile,
   updateProfile,
   getAllUsers,
   getUserById,
   updateUserRole,
   deleteUser,
-  forgetPassword
+  getOrganizerEvents, 
+  getEventAnalytics, 
+  getUserBookings
 };
