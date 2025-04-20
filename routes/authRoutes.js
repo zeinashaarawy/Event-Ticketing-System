@@ -9,6 +9,7 @@ router.post('/register', registerUser);
 // User login
 router.post('/login', login);
 
+
 // Forget password - send OTP
 router.put('/forgetPassword', forgetPassword);
 

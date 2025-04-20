@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const otpGenerator = require('otp-generator');
+
 const sendEmail = require('../services/emailService'); // Assuming you have an email service like this
 
 // Store OTPs temporarily (replace with a more persistent solution like Redis for production)
@@ -23,6 +24,7 @@ const registerUser = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
+
 
     const user = await User.create({
       name,
@@ -97,6 +99,7 @@ const forgetPassword = async (req, res) => {
     // Generate OTP
     const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false });
 
+
     // Send OTP to the user's email
     await sendEmail(email, 'Password Reset OTP', `Your OTP is: ${otp}`);
 
@@ -108,10 +111,12 @@ const forgetPassword = async (req, res) => {
     console.error('Forget password error:', err);
     res.status(500).json({ message: 'Server error' });
   }
+
 };
 
 // Verify OTP and reset password
 const verifyOtpAndResetPassword = async (req, res) => {
+
   const { email, otp, newPassword } = req.body;
 
   // Check if the OTP is valid
@@ -132,6 +137,7 @@ const verifyOtpAndResetPassword = async (req, res) => {
   delete otpStore[email];
 
   res.status(200).json({ message: 'Password reset successful' });
+
 };
 
 module.exports = {
