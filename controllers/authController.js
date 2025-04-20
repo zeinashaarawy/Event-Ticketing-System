@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const otpGenerator = require('otp-generator');
-const sendEmail = require('../services/emailService'); // Assuming you have an email service like this
 
 // Store OTPs temporarily (replace with a more persistent solution like Redis for production)
 let otpStore = {};
@@ -23,8 +22,7 @@ const registerUser = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
-    const user = await User.create({
+  const user = await User.create({
       name,
       email,
       password: password,
@@ -59,7 +57,6 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
@@ -97,21 +94,19 @@ const forgetPassword = async (req, res) => {
     // Generate OTP
     const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false });
 
-    // Send OTP to the user's email
-    await sendEmail(email, 'Password Reset OTP', `Your OTP is: ${otp}`);
-
     // Store OTP temporarily (In production, use Redis or a DB with expiration)
     otpStore[email] = otp;
 
-    res.status(200).json({ message: 'OTP sent to email' });
+    res.status(200).json({ message: OTP generated: ${otp} });
   } catch (err) {
     console.error('Forget password error:', err);
     res.status(500).json({ message: 'Server error' });
   }
-};
+
+ };
 
 // Verify OTP and reset password
-const verifyOtpAndResetPassword = async (req, res) => {
+async function verifyOtpAndResetPassword(req, res) {
   const { email, otp, newPassword } = req.body;
 
   // Check if the OTP is valid
@@ -132,7 +127,7 @@ const verifyOtpAndResetPassword = async (req, res) => {
   delete otpStore[email];
 
   res.status(200).json({ message: 'Password reset successful' });
-};
+}
 
 module.exports = {
   registerUser,
