@@ -97,7 +97,7 @@ const forgetPassword = async (req, res) => {
     // Store OTP temporarily (In production, use Redis or a DB with expiration)
     otpStore[email] = otp;
 
-    res.status(200).json({ message: OTP generated: ${otp} });
+    res.status(200).json({ message: `OTP generated: ${otp} `});
   } catch (err) {
     console.error('Forget password error:', err);
     res.status(500).json({ message: 'Server error' });
