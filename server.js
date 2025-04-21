@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
   res.send('Backend is running and connected to Atlas!');
 });
 
-//  Mount user routes 
+//  Mount user routes
 app.use('/api/v1/users' , userRoutes);
  app.use('/api/v1', authRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
