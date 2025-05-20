@@ -1,17 +1,21 @@
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+const User = require('../models/User');
 const otpGenerator = require('otp-generator');
 
-// Temporary store for OTPs (In production, use Redis or a DB with expiration)
-const otpStore = {};
+// Store OTPs temporarily (replace with a more persistent solution like Redis for production)
+let otpStore = {};
 
+
+// Helper function to generate JWT token
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role}, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 };
 
+// Register user
 const registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -21,7 +25,8 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = await User.create({
+  const user = await User.create({
+
       name,
       email,
       password: password,
@@ -46,6 +51,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+// User login
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -55,6 +61,7 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
+
     console.log('Attempt login for:', email);
     console.log('User found:', user ? true : false);
 
@@ -63,8 +70,8 @@ const login = async (req, res) => {
       console.log('Password match:', isMatch);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
 
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -101,15 +108,20 @@ const forgetPassword = async (req, res) => {
     // Generate OTP
     const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false });
 
+
     // Store OTP temporarily (In production, use Redis or a DB with expiration)
     otpStore[email] = otp;
+
 
     res.status(200).json({ message: `OTP generated: ${otp} `});
   } catch (err) {
     console.error('Forget password error:', err);
     res.status(500).json({ message: 'Server error' });
   }
-};
+
+
+ };
+
 
 // Verify OTP and reset password
 async function verifyOtpAndResetPassword(req, res) {
@@ -135,6 +147,7 @@ async function verifyOtpAndResetPassword(req, res) {
   res.status(200).json({ message: 'Password reset successful' });
 }
 
+
 // Logout user
 const logout = (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
@@ -146,4 +159,5 @@ module.exports = {
   forgetPassword,
   verifyOtpAndResetPassword,
   logout
+
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { registerUser, login, forgetPassword, verifyOtpAndResetPassword, logout } = require('../controllers/authController');
 
+
 // User registration
 router.post('/register', registerUser);
 
@@ -10,6 +11,7 @@ router.post('/login', login);
 
 // User logout
 router.post('/logout', logout);
+
 
 // Forget password - send OTP
 router.put('/forgetPassword', forgetPassword);
