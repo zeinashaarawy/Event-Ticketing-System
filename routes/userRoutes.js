@@ -10,9 +10,6 @@ const {
   getUserById,
   updateUserRole,
   deleteUser,
-  login,
-  registerUser,
-  forgetPassword,
   getOrganizerEvents,
   getEventAnalytics, 
   getUserBookings
@@ -20,12 +17,6 @@ const {
 
 const { protect, authorizeRoles } = require('../middleware/authentication');
 const Event = require('../models/Event');
-
-
-// Public routes
-router.post('/register', registerUser);
-router.post('/login', login); 
-router.put('/forgetPassword', forgetPassword);
 
 // Authenticated user routes
 router.get('/profile', protect, getProfile);
