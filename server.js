@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const dotenv = require('dotenv');
+require('dotenv').config();
 const connectDB = require('./config/db');
 
 // ✅ Load environment variables from .env in root folder
@@ -14,6 +14,7 @@ connectDB();
 const userRoutes = require('./routes/userRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 
 // ✅ Mount routes
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1', authRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/events', eventRoutes);
 

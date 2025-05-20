@@ -44,6 +44,70 @@ exports.login = async (req, res) => {
 
     res.json({ token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
+};
+
+// Forget password with OTP (MFA)
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+  //console.log("newPassword:", newPassword);
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate OTP
+    const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false });
+
+    // Store OTP temporarily (In production, use Redis or a DB with expiration)
+    otpStore[email] = otp;
+
+    res.status(200).json({ message: `OTP generated: ${otp} `});
+  } catch (err) {
+    console.error('Forget password error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+
+ };
+
+// Verify OTP and reset password
+async function verifyOtpAndResetPassword(req, res) {
+  const { email, otp, newPassword } = req.body;
+
+  // Check if the OTP is valid
+  if (otpStore[email] !== otp) {
+    return res.status(400).json({ message: 'Invalid OTP' });
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update user's password in the database
+  const user = await User.findOneAndUpdate({ email }, { password: hashedPassword });
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  // Clear OTP after password reset
+  delete otpStore[email];
+
+  res.status(200).json({ message: 'Password reset successful' });
+}
+
+// Logout user
+const logout = (req, res) => {
+  res.status(200).json({ message: 'Logged out successfully' });
+};
+
+module.exports = {
+  registerUser,
+  login,
+  forgetPassword,
+  verifyOtpAndResetPassword,
+  logout
 };
