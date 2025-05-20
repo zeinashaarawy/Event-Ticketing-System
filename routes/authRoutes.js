@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const { registerUser, login, forgetPassword, verifyOtpAndResetPassword, logout } = require('../controllers/authController');
 
-const { registerUser, login, forgetPassword, verifyOtpAndResetPassword } = require('../controllers/authController');
 
 // User registration
 router.post('/register', registerUser);
 
 // User login
 router.post('/login', login);
+
+// User logout
+router.post('/logout', logout);
 
 
 // Forget password - send OTP

@@ -1,10 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const User = require('../models/User');
 const otpGenerator = require('otp-generator');
 
 // Store OTPs temporarily (replace with a more persistent solution like Redis for production)
 let otpStore = {};
+
 
 // Helper function to generate JWT token
 const generateToken = (user) => {
@@ -22,7 +24,9 @@ const registerUser = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
+
   const user = await User.create({
+
       name,
       email,
       password: password,
@@ -57,6 +61,16 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
+
+    console.log('Attempt login for:', email);
+    console.log('User found:', user ? true : false);
+
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      console.log('Password match:', isMatch);
+    }
+
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
@@ -94,8 +108,10 @@ const forgetPassword = async (req, res) => {
     // Generate OTP
     const otp = otpGenerator.generate(6, { digits: true, upperCase: false, specialChars: false });
 
+
     // Store OTP temporarily (In production, use Redis or a DB with expiration)
     otpStore[email] = otp;
+
 
     res.status(200).json({ message: `OTP generated: ${otp} `});
   } catch (err) {
@@ -103,7 +119,9 @@ const forgetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 
+
  };
+
 
 // Verify OTP and reset password
 async function verifyOtpAndResetPassword(req, res) {
@@ -129,9 +147,17 @@ async function verifyOtpAndResetPassword(req, res) {
   res.status(200).json({ message: 'Password reset successful' });
 }
 
+
+// Logout user
+const logout = (req, res) => {
+  res.status(200).json({ message: 'Logged out successfully' });
+};
+
 module.exports = {
   registerUser,
   login,
   forgetPassword,
   verifyOtpAndResetPassword,
+  logout
+
 };
