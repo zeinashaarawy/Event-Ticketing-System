@@ -19,4 +19,10 @@ router.put('/forgetPassword', forgetPassword);
 // Verify OTP and reset password
 router.put('/verifyOtpAndResetPassword', verifyOtpAndResetPassword);
 
+// Get current user info (placeholder implementation)
+router.get('/me', (req, res) => {
+  // TODO: Replace with real authentication/user lookup logic
+  res.json({ message: 'User info endpoint working!' });
+});
+
 module.exports = router;
