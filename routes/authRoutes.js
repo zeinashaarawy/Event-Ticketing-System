@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { registerUser, login, forgetPassword, verifyOtpAndResetPassword, logout } = require('../controllers/authController');
+const { protect } = require('../middleware/authentication');
 
 
 // User registration
@@ -19,10 +20,9 @@ router.put('/forgetPassword', forgetPassword);
 // Verify OTP and reset password
 router.put('/verifyOtpAndResetPassword', verifyOtpAndResetPassword);
 
-// Get current user info (placeholder implementation)
-router.get('/me', (req, res) => {
-  // TODO: Replace with real authentication/user lookup logic
-  res.json({ message: 'User info endpoint working!' });
+// Get current user info (protected)
+router.get('/me', protect, (req, res) => {
+  res.json(req.user);
 });
 
 module.exports = router;
