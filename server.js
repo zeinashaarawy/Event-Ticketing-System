@@ -15,13 +15,12 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const authRoutes = require('./routes/authRoutes');
 
-
+dotenv.config();
 connectDB();
 
-// ✅ Import routes
-const userRoutes = require('./routes/userRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const eventRoutes = require('./routes/eventRoutes');
+
+
+
 
 const app = express();
 app.use(cors());
