@@ -1,101 +1,58 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from '../utils/axios';
+import React, { createContext, useState, useContext } from 'react';
+import api from '../utils/axios';
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if user is logged in on mount
-    const token = localStorage.getItem('token');
-    if (token) {
-      const userData = JSON.parse(localStorage.getItem('user'));
-      setUser(userData);
-    }
-    setLoading(false);
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/login', { email, password });
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
-      
+      const response = await api.post('/login', { email, password });
+      setUser(response.data);
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Login failed' 
+        error: error.response?.data?.message || 'Login failed' 
       };
     }
   };
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('/register', userData);
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
-      
+      await api.post('/register', userData);
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Registration failed' 
+        error: error.response?.data?.message || 'Registration failed' 
       };
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post('/logout');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      await api.post('/auth/logout');
       setUser(null);
       return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Logout failed' 
+        error: error.response?.data?.message || 'Logout failed' 
       };
     }
   };
 
-  const forgetPassword = async (email) => {
+  const forgotPassword = async (email) => {
     try {
-      const response = await axios.put('/forgetPassword', { email });
-      return { success: true, message: response.data.message };
+      await api.put('/forgetPassword', { email });
+      return { success: true };
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Failed to process forget password request' 
-      };
-    }
-  };
-
-  const resetPassword = async (email, otp, newPassword) => {
-    try {
-      const response = await axios.put('/verifyOtpAndResetPassword', {
-        email,
-        otp,
-        newPassword
-      });
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Failed to reset password' 
+        error: error.response?.data?.message || 'Password reset request failed' 
       };
     }
   };
@@ -106,13 +63,23 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    forgetPassword,
-    resetPassword
+    forgotPassword,
+    isAuthenticated: !!user,
+    isAdmin: user?.role === 'admin',
+    isOrganizer: user?.role === 'organizer'
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }; 
