@@ -146,24 +146,41 @@ const getEventAnalytics = async (req, res) => {
           totalEvents: 0,
           totalTicketsSold: 0,
           totalRevenue: 0,
-          upcomingEvents: []
+          upcomingEvents: [],
+          eventBookingStats: []
         }
       });
     }
 
-    const totalTicketsSold = events.reduce((total, event) => {
-      const remaining = event.remainingTickets ?? event.ticketsAvailable; // fallback
-      const sold = Math.max(event.ticketsAvailable - remaining, 0);
-      return total + sold;
-    }, 0);
-    //total revenu = The total amount of money earned by the organizer from ticket sales
-    const totalRevenue = events.reduce((total, event) => {
-      const remaining = event.remainingTickets ?? event.ticketsAvailable;
-      const sold = Math.max(event.ticketsAvailable - remaining, 0);
-      return total + (event.ticketPrice * sold);
-    }, 0);
+    let totalTicketsSold = 0;
+    let totalRevenue = 0;
 
-    const upcomingEvents = events.filter(event => new Date(event.date) > new Date());
+    const upcomingEvents = [];
+    const eventBookingStats = [];
+
+    for (const event of events) {
+      const total = event.ticketsAvailable;
+      const remaining = event.remainingTickets ?? total;
+      const sold = Math.max(total - remaining, 0);
+      const percentBooked = ((sold / total) * 100).toFixed(2);
+
+      totalTicketsSold += sold;
+      totalRevenue += sold * event.ticketPrice;
+
+      if (new Date(event.date) > new Date()) {
+        upcomingEvents.push({
+          title: event.title,
+          date: event.date,
+          ticketsAvailable: total
+        });
+      }
+
+      eventBookingStats.push({
+        eventId: event._id,
+        title: event.title,
+        percentBooked
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -171,11 +188,8 @@ const getEventAnalytics = async (req, res) => {
         totalEvents: events.length,
         totalTicketsSold,
         totalRevenue,
-        upcomingEvents: upcomingEvents.map(event => ({
-          title: event.title,
-          date: event.date,
-          ticketsAvailable: event.ticketsAvailable
-        }))
+        upcomingEvents,
+        eventBookingStats // for your graph!
       }
     });
   } catch (error) {

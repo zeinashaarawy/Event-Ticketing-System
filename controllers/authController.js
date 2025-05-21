@@ -95,6 +95,7 @@ const login = async (req, res) => {
 // Forget password with OTP
 const forgetPassword = async (req, res) => {
   const { email } = req.body;
+  //console.log("newPassword:", newPassword);
 
   try {
     const user = await User.findOne({ email });
