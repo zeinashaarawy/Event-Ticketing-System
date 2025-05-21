@@ -7,6 +7,7 @@ import Footer from './components/shared/Footer';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPasswordForm from './components/auth/ResetPasswordForm';
 import ProtectedRoute from './components/shared/ProtectedRoute';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPasswordForm />} />
               <Route
                 path="/"
                 element={
