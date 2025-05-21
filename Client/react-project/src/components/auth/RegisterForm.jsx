@@ -133,8 +133,9 @@ const RegisterForm = () => {
                 value={formData.role}
                 onChange={handleChange}
               >
-                <option value="user">Event Attendee</option>
-                <option value="organizer">Event Organizer</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="organizer">Organizer</option>
               </select>
             </div>
           </div>
