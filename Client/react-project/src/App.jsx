@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/authContext';
@@ -7,10 +7,12 @@ import Navbar from './components/shared/Navbar';
 import Footer from './components/shared/Footer';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
+import ForgotPassword from './components/auth/ForgotPassword';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ProfilePage from './components/profile/ProfilePage';
 import EventList from './components/events/EventList';
 import EventDetails from './components/events/EventDetails';
+import AdminUsersPage from './components/admin/AdminUsersPage';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/authContext';
 
@@ -72,6 +74,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 <Route
@@ -82,6 +85,25 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                {/* Admin Routes */}
+                <Route
+                  path="/admin"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <Navigate to="/admin/users" replace />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <AdminUsersPage />
+                    </PrivateRoute>
+                  }
+                />
+                {/* Catch all route for 404 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>
             <Footer />
