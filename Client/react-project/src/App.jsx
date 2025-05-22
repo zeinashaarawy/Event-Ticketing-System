@@ -15,6 +15,7 @@ import EventDetails from './components/events/EventDetails';
 import AdminUsersPage from './components/admin/AdminUsersPage';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/authContext';
+import EventForm from './events/EventForm';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
+                <Route path="/events/create" element={<EventForm />} />
                 <Route
                   path="/profile"
                   element={

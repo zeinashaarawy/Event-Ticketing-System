@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserBookings } from '../api';
+import { getUserBookings } from '../../../src/api';
 import {
   Container,
   Paper,

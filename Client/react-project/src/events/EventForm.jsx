@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createEvent, updateEvent } from '../../api';
+import { eventsAPI } from '../services/api';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -40,10 +40,10 @@ const EventForm = () => {
 
     try {
       if (isEditMode) {
-        await updateEvent(id, formData);
+        await eventsAPI.updateEvent(id, formData);
         toast.success('Event updated successfully');
       } else {
-        await createEvent(formData);
+        await eventsAPI.createEvent(formData);
         toast.success('Event created successfully');
       }
       navigate('/my-events');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getBookingDetails, cancelBooking } from '../api';
+import { getBookingDetails, cancelBooking } from '../../../src/api';
 import {
   Container,
   Paper,

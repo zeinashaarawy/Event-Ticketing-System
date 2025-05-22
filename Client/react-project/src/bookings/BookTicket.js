@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { bookTickets } from '../api';
+import { bookTickets } from '../../../src/api';
 import {
   Container,
   Paper,

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { eventAPI } from '../utils/axios';
+import api from '../utils/axios';
 
 const EventContext = createContext(null);
 
@@ -17,7 +17,7 @@ export const EventProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await eventAPI.getAllEvents();
+      const response = await api.getAllEvents();
       const eventsList = Array.isArray(response.data) ? response.data : response.data.data;
       setEvents(eventsList || []);
     } catch (error) {
@@ -31,7 +31,7 @@ export const EventProvider = ({ children }) => {
 
   const getEventById = async (eventId) => {
     try {
-      const response = await eventAPI.getEventById(eventId);
+      const response = await api.getEventById(eventId);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to fetch event details';
@@ -42,7 +42,7 @@ export const EventProvider = ({ children }) => {
 
   const createEvent = async (eventData) => {
     try {
-      const response = await eventAPI.createEvent(eventData);
+      const response = await api.createEvent(eventData);
       setEvents(prev => [...prev, response.data]);
       toast.success('Event created successfully');
       return response.data;
@@ -55,7 +55,7 @@ export const EventProvider = ({ children }) => {
 
   const updateEvent = async (eventId, eventData) => {
     try {
-      const response = await eventAPI.updateEvent(eventId, eventData);
+      const response = await api.updateEvent(eventId, eventData);
       setEvents(prev => prev.map(event => 
         event._id === eventId ? response.data : event
       ));
@@ -70,7 +70,7 @@ export const EventProvider = ({ children }) => {
 
   const deleteEvent = async (eventId) => {
     try {
-      await eventAPI.deleteEvent(eventId);
+      await api.deleteEvent(eventId);
       setEvents(prev => prev.filter(event => event._id !== eventId));
       toast.success('Event deleted successfully');
     } catch (error) {
@@ -83,7 +83,7 @@ export const EventProvider = ({ children }) => {
   // For event organizers
   const getMyEvents = async () => {
     try {
-      const response = await eventAPI.getEventsByOrganizer();
+      const response = await api.getEventsByOrganizer();
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to fetch your events';
@@ -95,7 +95,7 @@ export const EventProvider = ({ children }) => {
   // For admins
   const getAllEventsAdmin = async () => {
     try {
-      const response = await eventAPI.getAllEventsAdmin();
+      const response = await api.getAllEventsAdmin();
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to fetch all events';

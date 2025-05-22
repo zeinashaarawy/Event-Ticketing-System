@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getMyEvents, deleteEvent } from '../../api';
+import { getMyEvents, deleteEvent } from '../../../src/api';
 import EventCard from './EventCard';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
