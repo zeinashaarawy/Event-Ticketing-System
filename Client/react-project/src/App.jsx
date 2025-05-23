@@ -9,6 +9,7 @@ import RegisterForm from './components/auth/RegisterForm';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPasswordForm from './components/auth/ResetPasswordForm';
 import ProtectedRoute from './components/shared/ProtectedRoute';
+import Unauthorized from './components/Unauthorized';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPasswordForm />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
               <Route
                 path="/"
                 element={
