@@ -23,7 +23,14 @@ connectDB();
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174'
+  ],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -32,7 +39,7 @@ app.get('/', (req, res) => {
 
 //  Mount user routes
 app.use('/api/v1/users' , userRoutes);
- app.use('/api/v1', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/events', eventRoutes);
 
