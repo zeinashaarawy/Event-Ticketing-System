@@ -3,7 +3,7 @@ import { useEvents } from '../../context/eventContext';
 import { eventAPI } from '../../utils/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 
 const EventList = () => {
   const { user } = useAuth();
