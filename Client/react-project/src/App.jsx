@@ -12,10 +12,13 @@ import PrivateRoute from './components/auth/PrivateRoute';
 import ProfilePage from './components/profile/ProfilePage';
 import EventList from './components/events/EventList';
 import EventDetails from './components/events/EventDetails';
+import CreateEvent from './components/events/CreateEvent';
+import MyEvents from './components/events/MyEvents';
+import EventAnalytics from './components/events/EventAnalytics';
 import AdminUsersPage from './components/admin/AdminUsersPage';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/authContext';
-import EventForm from './events/EventForm';
+import EditEvent from './components/events/EditEvent';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -52,7 +55,7 @@ const HomePage = () => {
             </Link>
           )}
           <Link
-            to={isAuthenticated ? "/events/create" : "/login"}
+            to={isAuthenticated ? "/create-event" : "/login"}
             className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg border-2 border-indigo-500 text-white hover:bg-indigo-500/10 transition-all duration-200 transform hover:scale-105"
           >
             {isAuthenticated ? "Create Event" : "Sign In"}
@@ -78,7 +81,41 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
-                <Route path="/events/create" element={<EventForm />} />
+                
+                {/* Event Management Routes */}
+                <Route
+                  path="/create-event"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <CreateEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/my-events"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <MyEvents />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/events/:id/edit"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EditEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/events/:id/analytics"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EventAnalytics />
+                    </PrivateRoute>
+                  }
+                />
+                
                 <Route
                   path="/profile"
                   element={
@@ -87,6 +124,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 {/* Admin Routes */}
                 <Route
                   path="/admin"
