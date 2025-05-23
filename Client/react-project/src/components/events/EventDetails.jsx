@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 import { eventAPI } from '../../utils/axios';
 import { toast } from 'react-toastify';
 import BookTicketForm from './BookTicketForm';
