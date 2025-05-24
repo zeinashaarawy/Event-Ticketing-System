@@ -1,13 +1,16 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider } from './context/authContext';
+import { AuthProvider, useAuth } from './context/authContext';
 import { EventProvider } from './context/eventContext';
 import Navbar from './components/shared/Navbar';
 import Footer from './components/shared/Footer';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPasswordForm from './components/auth/ResetPasswordForm';
+import ProtectedRoute from './components/shared/ProtectedRoute';
+import Unauthorized from './components/Unauthorized';
 import PrivateRoute from './components/auth/PrivateRoute';
 import ProfilePage from './components/profile/ProfilePage';
 import EventList from './components/events/EventList';
@@ -16,8 +19,6 @@ import CreateEvent from './components/events/CreateEvent';
 import MyEvents from './components/events/MyEvents';
 import EventAnalytics from './components/events/EventAnalytics';
 import AdminUsersPage from './components/admin/AdminUsersPage';
-import { Link } from 'react-router-dom';
-import { useAuth } from './context/authContext';
 import EditEvent from './components/events/EditEvent';
 
 const HomePage = () => {
@@ -79,6 +80,8 @@ function App() {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPasswordForm />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 
@@ -161,4 +164,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
