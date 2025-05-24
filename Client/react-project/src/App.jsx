@@ -15,8 +15,11 @@ import PrivateRoute from './components/auth/PrivateRoute';
 import ProfilePage from './components/profile/ProfilePage';
 import EventList from './components/events/EventList';
 import EventDetails from './components/events/EventDetails';
+import CreateEvent from './components/events/CreateEvent';
+import MyEvents from './components/events/MyEvents';
+import EventAnalytics from './components/events/EventAnalytics';
 import AdminUsersPage from './components/admin/AdminUsersPage';
-import EventForm from './events/EventForm';
+import EditEvent from './components/events/EditEvent';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -53,7 +56,7 @@ const HomePage = () => {
             </Link>
           )}
           <Link
-            to={isAuthenticated ? "/events/create" : "/login"}
+            to={isAuthenticated ? "/create-event" : "/login"}
             className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg border-2 border-indigo-500 text-white hover:bg-indigo-500/10 transition-all duration-200 transform hover:scale-105"
           >
             {isAuthenticated ? "Create Event" : "Sign In"}
@@ -63,17 +66,11 @@ const HomePage = () => {
     </div>
   );
 };
-=======
-import ResetPasswordForm from './components/auth/ResetPasswordForm';
-import ProtectedRoute from './components/shared/ProtectedRoute';
-import Unauthorized from './components/Unauthorized';
->>>>>>> feature-rodayna
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-<<<<<<< HEAD
         <EventProvider>
           <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
             <Navbar />
@@ -83,9 +80,45 @@ function App() {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPasswordForm />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
-                <Route path="/events/create" element={<EventForm />} />
+                
+                {/* Event Management Routes */}
+                <Route
+                  path="/create-event"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <CreateEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/my-events"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <MyEvents />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/events/:id/edit"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EditEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/events/:id/analytics"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EventAnalytics />
+                    </PrivateRoute>
+                  }
+                />
+                
                 <Route
                   path="/profile"
                   element={
@@ -94,6 +127,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 {/* Admin Routes */}
                 <Route
                   path="/admin"
@@ -125,61 +159,9 @@ function App() {
             progressClassName="bg-indigo-500"
           />
         </EventProvider>
-=======
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-          <Navbar />
-          <main className="flex-grow pt-20">
-            <Routes>
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPasswordForm />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
-              <Route
-                path="/"
-                element={
-                  <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
-                    <div className="text-center space-y-6">
-                      <h1 className="text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 text-transparent bg-clip-text">
-                        Welcome to Evently
-                      </h1>
-                      <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                        Your premier platform for discovering and managing events. Create, explore, and experience unforgettable moments.
-                      </p>
-                      <div className="flex justify-center space-x-4">
-                        <a
-                          href="/events"
-                          className="px-6 py-3 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
-                        >
-                          Explore Events
-                        </a>
-                        <a
-                          href="/register"
-                          className="px-6 py-3 text-sm font-medium rounded-lg text-indigo-400 bg-white/10 hover:bg-white/20 transition-all duration-200"
-                        >
-                          Get Started
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                }
-              />
-              {/* Add more routes here */}
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-        <ToastContainer 
-          position="top-right" 
-          autoClose={3000}
-          theme="dark"
-          toastClassName="bg-gray-800 text-white"
-          progressClassName="bg-indigo-500"
-        />
->>>>>>> feature-rodayna
       </AuthProvider>
     </Router>
   );
 }
 
-export default App;
+export default App; 
