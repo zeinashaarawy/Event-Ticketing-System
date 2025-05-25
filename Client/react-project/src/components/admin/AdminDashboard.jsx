@@ -31,13 +31,19 @@ const AdminDashboard = () => {
         eventAPI.getAllEvents()
       ]);
 
-      const users = usersResponse.data;
-      const events = eventsResponse.data;
+      const users = Array.isArray(usersResponse.data) ? usersResponse.data : usersResponse.data?.users || [];
+      const events = Array.isArray(eventsResponse.data) ? eventsResponse.data : eventsResponse.data?.events || [];
+
+      const totalBookings = events.reduce((acc, event) => {
+        const totalTickets = event.totalTickets || event.capacity || 0;
+        const availableTickets = event.ticketsAvailable || 0;
+        return acc + (totalTickets - availableTickets);
+      }, 0);
 
       setStats({
         totalUsers: users.length,
         totalEvents: events.length,
-        totalBookings: events.reduce((acc, event) => acc + (event.totalTickets - event.ticketsAvailable), 0),
+        totalBookings,
         pendingEvents: events.filter(event => event.status === 'pending').length
       });
     } catch (error) {
