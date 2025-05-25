@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authContext';
 import { toast } from 'react-toastify';
 
 const LoginForm = () => {
@@ -125,4 +125,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm; 
+export default LoginForm;

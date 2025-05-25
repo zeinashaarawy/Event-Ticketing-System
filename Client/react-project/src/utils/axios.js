@@ -63,6 +63,33 @@ api.interceptors.response.use(
   }
 );
 
+// Auth-related API endpoints
+export const authAPI = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+  logout: () => api.post('/auth/logout'),
+  getCurrentUser: () => api.get('/auth/me'),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
+  updateProfile: (userData) => api.put('/auth/profile', userData),
+  verifyEmail: (token) => api.post('/auth/verify-email', { token }),
+  resendVerification: () => api.post('/auth/resend-verification')
+};
+
+// User management API endpoints
+export const userAPI = {
+  getAllUsers: () => api.get('/users'),
+  getUserById: (id) => api.get(`/users/${id}`),
+  createUser: (userData) => api.post('/users', userData),
+  updateUser: (id, userData) => api.put(`/users/${id}`, userData),
+  deleteUser: (id) => api.delete(`/users/${id}`),
+  updateUserRole: (id, role) => api.patch(`/users/${id}/role`, { role }),
+  updateUserStatus: (id, status) => api.patch(`/users/${id}/status`, { status }),
+  getUserBookings: (id) => api.get(`/users/${id}/bookings`),
+  getUserEvents: (id) => api.get(`/users/${id}/events`),
+  searchUsers: (query) => api.get(`/users/search?q=${query}`)
+};
+
 // Event-related API endpoints
 export const eventAPI = {
   getAllEvents: () => api.get('/events'),
@@ -76,7 +103,8 @@ export const eventAPI = {
   getEventsByOrganizer: () => api.get('/events/organizer'),
   uploadEventImage: (eventId, imageData) => {
     return api.post(`/events/${eventId}/image`, imageData);
-  }
+  },
+  bookTickets: (eventId, data) => api.post(`/events/${eventId}/book`, data)
 };
 
 export default api; 
