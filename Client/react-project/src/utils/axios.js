@@ -67,12 +67,12 @@ api.interceptors.response.use(
 export const eventAPI = {
   getAllEvents: () => api.get('/events'),
   getEventById: (id) => api.get(`/events/${id}`),
-  createEvent: (eventData) => {
-    return api.post('/events', eventData);
-  },
+  createEvent: (eventData) => api.post('/events', eventData),
   updateEvent: (id, eventData) => api.put(`/events/${id}`, eventData),
   deleteEvent: (id) => api.delete(`/events/${id}`),
-  getMyEvents: () => api.get('/users/events'),
+  getMyEvents: () => api.get('/events/my-events'),
+  updateEventStatus: (id, status) => api.patch(`/events/${id}/status`, { status }),
+  getEventAnalytics: (id) => api.get(`/events/${id}/analytics`),
   getEventsByOrganizer: () => api.get('/events/organizer'),
   uploadEventImage: (eventId, imageData) => {
     return api.post(`/events/${eventId}/image`, imageData);

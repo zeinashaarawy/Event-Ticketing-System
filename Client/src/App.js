@@ -15,10 +15,10 @@ import {
 import CreateEvent from './components/CreateEvent';
 import EditEvent from './components/EditEvent';
 import MyEvents from './components/MyEvents';
-import BookingDetails from './components/BookingDetails';
-import BookTicket from './components/BookTicket';
+import BookingDetails from './components/bookings/BookingDetails';
+import BookTicket from './components/bookings/BookTicket';
 import TestAnalytics from './components/TestAnalytics';
-import MyBookings from './components/MyBookings';
+import MyBookings from './components/bookings/MyBookings';
 
 const theme = createTheme({
   palette: {
