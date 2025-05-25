@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 import UpdateProfileForm from './UpdateProfileForm';
 import { toast } from 'react-toastify';
 
