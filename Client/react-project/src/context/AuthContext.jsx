@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authAPI } from '../utils/axios';
 import { toast } from 'react-toastify';
 
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem('token');
       }
+
     } finally {
       setLoading(false);
     }
@@ -49,6 +51,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(userData);
+
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -71,6 +74,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(newUser);
+
       return { success: true };
     } catch (error) {
       console.error('Registration error:', error);
@@ -113,6 +117,8 @@ export const AuthProvider = ({ children }) => {
     try {
       await authAPI.logout();
       setUser(null);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       return { success: true };
     } catch (error) {
       console.error('Logout error:', error);
@@ -142,6 +148,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       toast.success('Profile updated successfully');
+
       return { success: true };
     } catch (error) {
       console.error('Profile update error:', error);

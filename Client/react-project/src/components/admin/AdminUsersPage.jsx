@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
 import { userAPI } from '../../utils/axios';
+
 import UserRow from './UserRow';
 import UpdateUserRoleModal from './UpdateUserRoleModal';
 
@@ -31,7 +32,7 @@ const AdminUsersPage = () => {
         return navigate('/');
       }
 
-      const res = await userAPI.getAllUsers();
+      const res = await api.getAllUsers();
       const data = res.data?.users || res.data?.data || res.data;
 
       if (!Array.isArray(data)) {
@@ -63,7 +64,7 @@ const AdminUsersPage = () => {
 
   const handleUpdateRole = async (userId, newRole) => {
     try {
-      await userAPI.updateUser(userId, { role: newRole });
+      await api.updateUser(userId, { role: newRole });
       toast.success('User role updated successfully');
       
       // Update the local state
@@ -93,7 +94,7 @@ const AdminUsersPage = () => {
       }
 
       // Attempt to delete the user
-      await userAPI.deleteUser(userId);
+      await api.deleteUser(userId);
 
       // If successful, update the local state
       setUsers(prevUsers => prevUsers.filter(u => u._id !== userId));

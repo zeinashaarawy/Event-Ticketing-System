@@ -1,14 +1,16 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
 
-const PrivateRoute = ({ children, adminOnly = false }) => {
-  const { user, isAuthenticated, isAdmin, loading } = useAuth();
+const PrivateRoute = ({ children, adminOnly = false, organizerOnly = false }) => {
+  const { user, isAuthenticated, isAdmin, isOrganizer, loading } = useAuth();
   const location = useLocation();
 
   console.log('PrivateRoute:', {
     isAuthenticated,
     isAdmin,
+    isOrganizer,
     adminOnly,
+    organizerOnly,
     currentPath: location.pathname,
     user
   });
@@ -28,6 +30,11 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
 
   if (adminOnly && !isAdmin) {
     console.log('Access denied: User is not admin');
+    return <Navigate to="/" replace />;
+  }
+
+  if (organizerOnly && !isOrganizer) {
+    console.log('Access denied: User is not organizer');
     return <Navigate to="/" replace />;
   }
 

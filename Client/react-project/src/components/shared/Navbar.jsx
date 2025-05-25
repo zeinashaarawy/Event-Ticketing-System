@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/authContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -84,6 +84,14 @@ const Navbar = () => {
               <NavLink to="/admin" className={navLinkClass}>
                 {({ isActive }) => (
                   <span className={isActive ? activeIndicator : ''}>Admin</span>
+                )}
+              </NavLink>
+            )}
+
+            {user?.role === 'organizer' && (
+              <NavLink to="/create-event" className={navLinkClass}>
+                {({ isActive }) => (
+                  <span className={isActive ? activeIndicator : ''}>Create Event</span>
                 )}
               </NavLink>
             )}
@@ -195,6 +203,22 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Admin
+              </NavLink>
+            )}
+
+            {user?.role === 'organizer' && (
+              <NavLink
+                to="/create-event"
+                className={({ isActive }) =>
+                  `block px-4 py-2.5 text-sm font-medium rounded-md ${
+                    isActive
+                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                  } transition`
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Create Event
               </NavLink>
             )}
 

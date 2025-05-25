@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useEvents } from '../../context/eventContext';
-import { eventAPI } from '../../utils/axios';
+import api from '../../utils/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
@@ -27,7 +27,7 @@ const EventList = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await eventAPI.getAllEvents();
+      const response = await api.get('/events');
       
       // Get events from response
       const eventsList = response.data?.events || [];
@@ -355,4 +355,3 @@ const EventList = () => {
 };
 
 export default EventList;
-
