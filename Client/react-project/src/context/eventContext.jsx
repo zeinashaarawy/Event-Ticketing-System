@@ -105,8 +105,15 @@ export const EventProvider = ({ children }) => {
       if (!response || !response.data) {
         throw new Error('No data received from server');
       }
-      // Ensure we always return an array
-      return Array.isArray(response.data) ? response.data : response.data.events || [];
+      // Handle different response structures
+      if (response.data.events) {
+        return response.data.events;
+      } else if (Array.isArray(response.data)) {
+        return response.data;
+      } else if (response.data.data) {
+        return response.data.data;
+      }
+      return [];
     } catch (error) {
       console.error('Get my events error:', error);
       throw error;

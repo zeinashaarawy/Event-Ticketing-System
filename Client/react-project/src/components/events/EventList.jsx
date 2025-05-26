@@ -29,8 +29,8 @@ const EventList = () => {
       setError(null);
       const response = await api.get('/events');
       
-      // Get events from response
-      const eventsList = response.data?.events || [];
+      // Get events from response with proper data structure handling
+      const eventsList = response.data?.data || response.data?.events || [];
       
       // If user is not admin or organizer, only show approved events
       const visibleEvents = user?.role === 'admin' || user?.role === 'organizer'
@@ -41,7 +41,7 @@ const EventList = () => {
       setFilteredEvents(visibleEvents);
     } catch (err) {
       console.error('Error fetching events:', err);
-      setError('Failed to load events');
+      setError(err.response?.data?.message || 'Failed to load events');
     } finally {
       setLoading(false);
     }

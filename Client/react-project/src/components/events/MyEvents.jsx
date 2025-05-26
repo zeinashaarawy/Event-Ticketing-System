@@ -32,12 +32,15 @@ const MyEvents = () => {
   const fetchMyEvents = async () => {
     try {
       setLoading(true);
-      const myEvents = await getMyEvents();
-      console.log('Fetched my events:', myEvents);
-      setEvents(Array.isArray(myEvents) ? myEvents : []);
+      const response = await getMyEvents();
+      console.log('Fetched my events response:', response);
+      
+      // Handle the response data structure
+      const eventsData = response.events || response.data?.events || response;
+      setEvents(Array.isArray(eventsData) ? eventsData : []);
     } catch (error) {
       console.error('Error in fetchMyEvents:', error);
-      toast.error(error.message || 'Failed to fetch your events');
+      toast.error(error.response?.data?.message || error.message || 'Failed to fetch your events');
     } finally {
       setLoading(false);
     }
