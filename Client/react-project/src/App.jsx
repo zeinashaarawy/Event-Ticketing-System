@@ -23,6 +23,7 @@ import AdminUsersPage from './components/admin/AdminUsersPage';
 import AdminEventsPage from './components/admin/AdminEventsPage';
 import EditEvent from './components/events/EditEvent';
 import UserBookingsPage from './pages/UserBookingsPage';
+import BookingDetails from './pages/BookingDetails';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -79,52 +80,17 @@ function App() {
             <Navbar />
             <main className="min-h-[calc(100vh-64px)]">
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPasswordForm />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
-                
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 
-                <Route
-                  path="/create-event"
-                  element={
-                    <PrivateRoute organizerOnly>
-                      <CreateEvent />
-                    </PrivateRoute>
-                  }
-                />
-                
-                <Route
-                  path="/my-events"
-                  element={
-                    <PrivateRoute organizerOnly>
-                      <MyEvents />
-                    </PrivateRoute>
-                  }
-                />
-                
-                <Route
-                  path="/events/:id/edit"
-                  element={
-                    <PrivateRoute organizerOnly>
-                      <EditEvent />
-                    </PrivateRoute>
-                  }
-                />
-                
-                <Route
-                  path="/events/:id/analytics"
-                  element={
-                    <PrivateRoute organizerOnly>
-                      <EventAnalytics />
-                    </PrivateRoute>
-                  }
-                />
-                
+                {/* Protected Routes - Standard Users */}
                 <Route
                   path="/profile"
                   element={
@@ -133,7 +99,6 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                
                 <Route
                   path="/my-bookings"
                   element={
@@ -143,7 +108,41 @@ function App() {
                   }
                 />
                 
-                {/* Admin Routes */}
+                {/* Protected Routes - Organizers */}
+                <Route
+                  path="/create-event"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <CreateEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/my-events"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <MyEvents />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/events/:id/edit"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EditEvent />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <PrivateRoute organizerOnly>
+                      <EventAnalytics />
+                    </PrivateRoute>
+                  }
+                />
+                
+                {/* Protected Routes - Admin Only */}
                 <Route
                   path="/admin"
                   element={
@@ -169,7 +168,15 @@ function App() {
                   }
                 />
                 
-                <Route path="/analytics" element={<PrivateRoute><EventAnalytics /></PrivateRoute>} />
+                {/* Protected Routes - Booking Details */}
+                <Route
+                  path="/bookings/:id"
+                  element={
+                    <PrivateRoute>
+                      <BookingDetails />
+                    </PrivateRoute>
+                  }
+                />
                 
                 {/* Catch all route for 404 */}
                 <Route path="*" element={<Navigate to="/" replace />} />

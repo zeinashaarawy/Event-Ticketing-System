@@ -31,7 +31,7 @@ const Navbar = () => {
     } group`;
 
   const activeIndicator =
-    'after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-gradient-to-r from-pink-500 via-fuchsia-500 to-sky-500 after:rounded-full after:transition-all after:duration-300';
+    'after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 after:rounded-full after:transition-all after:duration-300';
 
   return (
     <nav

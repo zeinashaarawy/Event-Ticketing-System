@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { bookingAPI } from '../utils/axios';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 const UserBookingsPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -132,15 +133,22 @@ const UserBookingsPage = () => {
                     </p>
                   </div>
                 </div>
-                
-                {booking.status !== 'cancelled' && (
-                  <button
-                    onClick={() => handleCancelBooking(booking._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to={`/bookings/${booking._id}`}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors mb-2 text-center"
                   >
-                    Cancel Booking
-                  </button>
-                )}
+                    View Details
+                  </Link>
+                  {booking.status !== 'cancelled' && (
+                    <button
+                      onClick={() => handleCancelBooking(booking._id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

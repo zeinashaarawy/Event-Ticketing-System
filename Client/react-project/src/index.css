@@ -1,3 +1,346 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remove default link underlines */
+a {
+  text-decoration: none;
+}
+
+/* Remove default button styles */
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Remove default focus outlines and replace with custom styles */
+*:focus {
+  outline: none;
+}
+
+/* Custom focus styles for interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+/* Remove default list styles */
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Remove default input styles */
+input, textarea, select {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+/* Remove default table styles */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Remove default fieldset styles */
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove default legend styles */
+legend {
+  padding: 0;
+}
+
+/* Remove default hr styles */
+hr {
+  border: none;
+  border-top: 1px solid #374151;
+  margin: 1rem 0;
+}
+
+/* Remove default blockquote styles */
+blockquote {
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove default pre styles */
+pre {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+}
+
+/* Remove default code styles */
+code {
+  font-family: inherit;
+}
+
+/* Remove default mark styles */
+mark {
+  background: none;
+  color: inherit;
+}
+
+/* Remove default small styles */
+small {
+  font-size: inherit;
+}
+
+/* Remove default sub and sup styles */
+sub, sup {
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
+/* Remove default details styles */
+details {
+  border: none;
+}
+
+/* Remove default summary styles */
+summary {
+  list-style: none;
+}
+
+/* Remove default meter styles */
+meter {
+  border: none;
+  background: none;
+}
+
+/* Remove default progress styles */
+progress {
+  border: none;
+  background: none;
+}
+
+/* Remove default select styles */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Remove default textarea styles */
+textarea {
+  resize: none;
+}
+
+/* Remove default button styles */
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Remove default input styles */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Remove default search input styles */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+/* Remove default color input styles */
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+}
+
+/* Remove default file input styles */
+input[type="file"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Remove default range input styles */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default checkbox and radio styles */
+/*
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  padding: 0;
+}
+*/
+
+/* Remove default datalist styles */
+datalist {
+  display: none;
+}
+
+/* Remove default output styles */
+output {
+  display: inline;
+}
+
+/* Remove default keygen styles */
+keygen {
+  display: none;
+}
+
+/* Remove default menu styles */
+menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Remove default menuitem styles */
+menuitem {
+  display: none;
+}
+
+/* Remove default meter styles */
+meter {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default progress styles */
+progress {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default select styles */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default textarea styles */
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default button styles */
+button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default input styles */
+input {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default fieldset styles */
+fieldset {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default legend styles */
+legend {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default details styles */
+details {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default summary styles */
+summary {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default meter styles */
+meter {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default progress styles */
+progress {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default select styles */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default textarea styles */
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default button styles */
+button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Remove default input styles */
+input {
+  -webkit-appearance: none;
+  appearance: none;
+}

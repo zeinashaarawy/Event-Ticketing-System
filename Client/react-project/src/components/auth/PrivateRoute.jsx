@@ -1,43 +1,27 @@
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import RoleBasedRoute from './RoleBasedRoute';
 
-const PrivateRoute = ({ children, adminOnly = false, organizerOnly = false }) => {
-  const { user, isAuthenticated, isAdmin, isOrganizer, loading } = useAuth();
+const PrivateRoute = ({ children, organizerOnly, adminOnly }) => {
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  console.log('PrivateRoute:', {
-    isAuthenticated,
-    isAdmin,
-    isOrganizer,
-    adminOnly,
-    organizerOnly,
-    currentPath: location.pathname,
-    user
-  });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
-
   if (!isAuthenticated) {
-    // Save the attempted path
+    // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (adminOnly && !isAdmin) {
-    console.log('Access denied: User is not admin');
-    return <Navigate to="/" replace />;
+  // Handle role-based access
+  if (organizerOnly) {
+    return <RoleBasedRoute allowedRoles={['organizer', 'admin']}>{children}</RoleBasedRoute>;
   }
 
-  if (organizerOnly && !isOrganizer) {
-    console.log('Access denied: User is not organizer');
-    return <Navigate to="/" replace />;
+  if (adminOnly) {
+    return <RoleBasedRoute allowedRoles={['admin']}>{children}</RoleBasedRoute>;
   }
 
+  // If no specific role is required, just check authentication
   return children;
 };
 

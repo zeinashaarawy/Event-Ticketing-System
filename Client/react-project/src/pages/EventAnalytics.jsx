@@ -69,12 +69,17 @@ const EventAnalytics = () => {
   }
 
   // Prepare chart data
+  console.log('eventBookingStats:', analytics.eventBookingStats);
+  console.log('Chart data:', analytics.eventBookingStats.map(stat => stat.percentBooked));
   const chartData = {
     labels: analytics.eventBookingStats.map(stat => stat.title),
     datasets: [
       {
         label: 'Booking Percentage',
-        data: analytics.eventBookingStats.map(stat => parseFloat(stat.percentBooked)),
+        data: analytics.eventBookingStats.map(stat => {
+          const val = Number(stat.percentBooked);
+          return isNaN(val) ? 0 : val;
+        }),
         backgroundColor: 'rgba(139, 92, 246, 0.6)', // Purple
         borderColor: 'rgba(139, 92, 246, 1)',
         borderWidth: 1,

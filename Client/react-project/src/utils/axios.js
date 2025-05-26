@@ -91,6 +91,7 @@ export const userAPI = {
   getUserById: (userId) => api.get(`/users/${userId}`),
   updateUser: (userId, userData) => api.put(`/users/${userId}`, userData),
   deleteUser: (userId) => api.delete(`/users/${userId}`),
+  updateUserRole: (userId, newRole) => api.put(`/users/${userId}`, { role: newRole }),
 };
 
 // Event API endpoints
@@ -113,7 +114,8 @@ export const eventAPI = {
   // Admin endpoints
   approveEvent: (eventId) => api.put(`/events/${eventId}`, { status: 'approved' }),
   rejectEvent: (eventId) => api.put(`/events/${eventId}`, { status: 'declined' }),
-  getAllEventsAdmin: () => api.get('/events/all')
+  getAllEventsAdmin: () => api.get('/events/all'),
+  updateEventStatus: (eventId, status) => api.put(`/events/${eventId}`, { status }),
 };
 
 // Booking API endpoints

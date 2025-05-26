@@ -13,82 +13,80 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onUpdate, currentRole }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedRole && selectedRole !== currentRole) {
-      onUpdate(selectedRole); // Call update
+      onUpdate(selectedRole);
     }
-    onClose(); // Then close
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-60 px-4">
-      {/* BACKDROP (click outside to close) */}
+      {/* BACKDROP */}
       <div
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 bg-black bg-opacity-60"
         onClick={onClose}
       />
 
       {/* MODAL CONTENT */}
       <div
-        className="relative z-10 w-full max-w-lg transform overflow-hidden rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-xl transition-all"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        className="relative z-10 w-full max-w-lg transform overflow-hidden rounded-lg bg-gray-800 p-6 shadow-xl transition-all"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
-        <div className="absolute top-3 right-3">
-          <button
-            onClick={onClose}
-            className="rounded-md text-gray-400 hover:text-gray-200 focus:outline-none"
-          >
-            <span className="sr-only">Close</span>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 focus:outline-none"
+        >
+          <span className="sr-only">Close</span>
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
         {/* Modal content */}
-        <h3 className="text-lg font-medium text-white mb-4">Update User Role</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {roles.map((role) => (
-              <div key={role} className="flex items-center">
-                <input
-                  type="radio"
-                  id={role}
-                  name="role"
-                  value={role}
-                  checked={selectedRole === role}
-                  onChange={() => setSelectedRole(role)}
-                  className="h-4 w-4 border-gray-600 text-indigo-600 bg-gray-700 focus:ring-indigo-500"
-                />
+        <div className="text-center sm:text-left">
+          <h3 className="text-lg font-medium text-white mb-4">Update User Role</h3>
+          <form onSubmit={handleSubmit} className="mt-5">
+            <div className="space-y-4">
+              {roles.map((role) => (
                 <label
-                  htmlFor={role}
-                  className="ml-3 text-sm font-medium text-gray-300 capitalize"
+                  key={role}
+                  className="flex items-center p-3 cursor-pointer rounded-lg hover:bg-gray-700/50 transition-colors"
                 >
-                  {role}
+                  <input
+                    type="radio"
+                    name="role"
+                    value={role}
+                    checked={selectedRole === role}
+                    onChange={() => setSelectedRole(role)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-600 bg-gray-700"
+                  />
+                  <span className="ml-3 text-sm font-medium text-gray-300 capitalize select-none">
+                    {role}
+                  </span>
                 </label>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="mt-6 flex justify-end gap-3">
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Update Role
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md border border-gray-600 bg-gray-700 px-4 py-2 text-sm font-medium text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+              >
+                Update Role
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
 export default UpdateUserRoleModal;
-
