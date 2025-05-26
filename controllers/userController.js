@@ -159,10 +159,11 @@ const getEventAnalytics = async (req, res) => {
     const eventBookingStats = [];
 
     for (const event of events) {
-      const total = event.ticketsAvailable;
-      const remaining = event.remainingTickets ?? total;
-      const sold = Math.max(total - remaining, 0);
-      const percentBooked = ((sold / total) * 100).toFixed(2);
+      // Get total tickets sold for this event
+      const bookings = await Booking.find({ event: event._id });
+      const sold = bookings.reduce((sum, b) => sum + b.quantity, 0);
+      const total = event.ticketsAvailable + sold; // original total
+      const percentBooked = total > 0 ? (sold / total) * 100 : 0;
 
       totalTicketsSold += sold;
       totalRevenue += sold * event.ticketPrice;
@@ -171,7 +172,7 @@ const getEventAnalytics = async (req, res) => {
         upcomingEvents.push({
           title: event.title,
           date: event.date,
-          ticketsAvailable: total
+          ticketsAvailable: event.ticketsAvailable
         });
       }
 

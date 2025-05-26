@@ -6,9 +6,13 @@ const {
   getApprovedEvents, 
   getAllEvents,
   updateEvent, 
-  deleteEvent 
+  deleteEvent,
+  getMyEvents
 } = require('../controllers/eventController');
 const { protect, authorizeRoles } = require('../middleware/authentication');
+
+// Get events created by the current user
+router.get('/my-events', protect, authorizeRoles('organizer', 'admin'), getMyEvents);
 
 router.get('/', getApprovedEvents);
 router.get('/all', getAllEvents);

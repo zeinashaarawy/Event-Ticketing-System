@@ -83,15 +83,15 @@ const updateEvent = async (req, res) => {
     }
 
     // Update fields (organizer can update all except status)
-    event.title = title || event.title;
-    event.description = description || event.description;
-    event.date = date || event.date;
-    event.location = location || event.location;
-    event.ticketsAvailable = ticketsAvailable || event.ticketsAvailable;
-    event.ticketPrice = ticketPrice || event.ticketPrice;
+    if (typeof title !== 'undefined') event.title = title;
+    if (typeof description !== 'undefined') event.description = description;
+    if (typeof date !== 'undefined') event.date = date;
+    if (typeof location !== 'undefined') event.location = location;
+    if (typeof ticketsAvailable !== 'undefined') event.ticketsAvailable = ticketsAvailable;
+    if (typeof ticketPrice !== 'undefined') event.ticketPrice = ticketPrice;
 
     // Only allow admins to update the status
-    if (status && req.user.role === 'admin') {
+    if (typeof status !== 'undefined' && req.user.role === 'admin') {
       event.status = status;
     }
 
@@ -137,14 +137,26 @@ const deleteEvent = async (req, res) => {
   }
 };
 
-
-
-
+// Get events created by the current user
+const getMyEvents = async (req, res) => {
+  try {
+    const events = await Event.find({ organizer: req.user.id })
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch your events',
+      error: error.message,
+    });
+  }
+};
 
 module.exports = { createEvent, 
   getEventById , 
   getApprovedEvents, 
   getAllEvents,
   updateEvent, 
-  deleteEvent
+  deleteEvent,
+  getMyEvents
  };

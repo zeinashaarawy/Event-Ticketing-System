@@ -5,85 +5,140 @@ const UpdateUserRoleModal = ({ isOpen, onClose, onUpdate, currentRole }) => {
   const [selectedRole, setSelectedRole] = useState(currentRole);
 
   useEffect(() => {
-    setSelectedRole(currentRole); // Reset when modal opens
+    setSelectedRole(currentRole);
   }, [isOpen, currentRole]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedRole && selectedRole !== currentRole) {
-      onUpdate(selectedRole);
-    }
+    onUpdate(selectedRole);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-60 px-4">
-      {/* BACKDROP */}
-      <div
-        className="fixed inset-0 bg-black bg-opacity-60"
-        onClick={onClose}
-      />
-
-      {/* MODAL CONTENT */}
-      <div
-        className="relative z-10 w-full max-w-lg transform overflow-hidden rounded-lg bg-gray-800 p-6 shadow-xl transition-all"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 focus:outline-none"
-        >
-          <span className="sr-only">Close</span>
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        {/* Modal content */}
-        <div className="text-center sm:text-left">
-          <h3 className="text-lg font-medium text-white mb-4">Update User Role</h3>
-          <form onSubmit={handleSubmit} className="mt-5">
-            <div className="space-y-4">
-              {roles.map((role) => (
-                <label
-                  key={role}
-                  className="flex items-center p-3 cursor-pointer rounded-lg hover:bg-gray-700/50 transition-colors"
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value={role}
-                    checked={selectedRole === role}
-                    onChange={() => setSelectedRole(role)}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-600 bg-gray-700"
-                  />
-                  <span className="ml-3 text-sm font-medium text-gray-300 capitalize select-none">
-                    {role}
-                  </span>
-                </label>
-              ))}
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      backdropFilter: 'blur(4px)'
+    }}>
+      <div style={{
+        backgroundColor: '#1a1a1a',
+        padding: '24px',
+        borderRadius: '12px',
+        width: '400px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <h2 style={{ 
+          marginBottom: '24px', 
+          color: 'white',
+          fontSize: '1.5rem',
+          fontWeight: '600',
+          textAlign: 'center'
+        }}>
+          Update User Role
+        </h2>
+        
+        <form onSubmit={handleSubmit}>
+          {roles.map((role) => (
+            <div 
+              key={role} 
+              style={{ 
+                marginBottom: '16px',
+                padding: '12px',
+                borderRadius: '8px',
+                backgroundColor: selectedRole === role ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                border: '1px solid',
+                borderColor: selectedRole === role ? 'rgba(99, 102, 241, 0.5)' : 'rgba(255, 255, 255, 0.1)',
+                transition: 'all 0.2s ease-in-out',
+                cursor: 'pointer'
+              }}
+              onClick={() => setSelectedRole(role)}
+            >
+              <input
+                type="radio"
+                id={role}
+                name="role"
+                value={role}
+                checked={selectedRole === role}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                style={{
+                  marginRight: '12px',
+                  width: '18px',
+                  height: '18px',
+                  accentColor: '#6366f1'
+                }}
+              />
+              <label 
+                htmlFor={role}
+                style={{
+                  color: 'white',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  userSelect: 'none'
+                }}
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
-              >
-                Update Role
-              </button>
+                {role.charAt(0).toUpperCase() + role.slice(1)}
+              </label>
             </div>
-          </form>
-        </div>
+          ))}
+          
+          <div style={{ 
+            marginTop: '24px', 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            gap: '12px' 
+          }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                transition: 'all 0.2s ease-in-out',
+                ':hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                }
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#6366f1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                transition: 'all 0.2s ease-in-out',
+                ':hover': {
+                  backgroundColor: '#4f46e5'
+                }
+              }}
+            >
+              Update Role
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

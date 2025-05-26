@@ -24,6 +24,7 @@ import AdminEventsPage from './components/admin/AdminEventsPage';
 import EditEvent from './components/events/EditEvent';
 import UserBookingsPage from './pages/UserBookingsPage';
 import BookingDetails from './pages/BookingDetails';
+import TestRadioGroup from './components/admin/TestRadioGroup';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -183,6 +184,7 @@ function App() {
               </Routes>
             </main>
             <Footer />
+            <TestRadioGroup />
           </div>
           <ToastContainer 
             position="top-right" 
