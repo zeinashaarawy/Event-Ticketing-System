@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider, useAuth } from './context/authContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { EventProvider } from './context/eventContext';
 import Navbar from './components/shared/Navbar';
 import Footer from './components/shared/Footer';
@@ -20,6 +20,7 @@ import MyEvents from './components/events/MyEvents';
 import EventAnalytics from './components/events/EventAnalytics';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminUsersPage from './components/admin/AdminUsersPage';
+import AdminEventsPage from './components/admin/AdminEventsPage';
 import EditEvent from './components/events/EditEvent';
 
 const HomePage = () => {
@@ -146,6 +147,14 @@ function App() {
                   element={
                     <PrivateRoute adminOnly>
                       <AdminUsersPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/admin/events"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <AdminEventsPage />
                     </PrivateRoute>
                   }
                 />

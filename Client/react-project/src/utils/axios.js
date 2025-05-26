@@ -83,7 +83,7 @@ export const userAPI = {
   createUser: (userData) => api.post('/users', userData),
   updateUser: (id, userData) => api.put(`/users/${id}`, userData),
   deleteUser: (id) => api.delete(`/users/${id}`),
-  updateUserRole: (id, role) => api.patch(`/users/${id}/role`, { role }),
+  updateUserRole: (id, role) => api.put(`/users/${id}`, { role }),
   updateUserStatus: (id, status) => api.patch(`/users/${id}/status`, { status }),
   getUserBookings: (id) => api.get(`/users/${id}/bookings`),
   getUserEvents: (id) => api.get(`/users/${id}/events`),
@@ -92,13 +92,13 @@ export const userAPI = {
 
 // Event-related API endpoints
 export const eventAPI = {
-  getAllEvents: () => api.get('/events'),
+  getAllEvents: () => api.get('/events/all'),
   getEventById: (id) => api.get(`/events/${id}`),
   createEvent: (eventData) => api.post('/events', eventData),
   updateEvent: (id, eventData) => api.put(`/events/${id}`, eventData),
   deleteEvent: (id) => api.delete(`/events/${id}`),
   getMyEvents: () => api.get('/users/events'),
-  updateEventStatus: (id, status) => api.patch(`/events/${id}/status`, { status }),
+  updateEventStatus: (id, status) => api.put(`/events/${id}`, { status }),
   getEventAnalytics: (id) => api.get(`/events/${id}/analytics`),
   getEventsByOrganizer: () => api.get('/events/organizer'),
   uploadEventImage: (eventId, imageData) => {
@@ -107,4 +107,4 @@ export const eventAPI = {
   bookTickets: (eventId, data) => api.post(`/events/${eventId}/book`, data)
 };
 
-export default api; 
+export default api;
