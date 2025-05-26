@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 import { useEvents } from '../../context/eventContext';
 import { eventAPI } from '../../utils/axios';
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 import { useEvents } from '../../context/eventContext';
 import { toast } from 'react-toastify';
 
