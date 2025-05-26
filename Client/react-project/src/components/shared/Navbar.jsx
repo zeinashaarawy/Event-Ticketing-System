@@ -37,8 +37,8 @@ const Navbar = () => {
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-black/70 backdrop-blur-md shadow-lg'
-          : 'bg-gradient-to-tr from-gray-900/60 via-gray-800/50 to-gray-900/60'
+          ? 'bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-gray-800/50'
+          : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -46,7 +46,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="text-3xl font-extrabold bg-gradient-to-r from-fuchsia-400 via-indigo-500 to-cyan-400 text-transparent bg-clip-text tracking-tight hover:opacity-90 transition-opacity duration-300"
+            className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text tracking-tight hover:opacity-90 transition-opacity duration-300"
           >
             Evently
           </Link>
@@ -62,7 +62,7 @@ const Navbar = () => {
                       className={`${
                         isActive
                           ? activeIndicator
-                          : 'group-hover:after:absolute group-hover:after:bottom-0 group-hover:after:left-0 group-hover:after:h-[2px] group-hover:after:w-full group-hover:after:bg-fuchsia-500 group-hover:after:transition-all group-hover:after:duration-300'
+                          : 'group-hover:after:absolute group-hover:after:bottom-0 group-hover:after:left-0 group-hover:after:h-[2px] group-hover:after:w-full group-hover:after:bg-gradient-to-r group-hover:after:from-purple-500 group-hover:after:to-pink-500 group-hover:after:transition-all group-hover:after:duration-300'
                       }`}
                     >
                       {labels[i]}
@@ -103,6 +103,14 @@ const Navbar = () => {
                 )}
               </NavLink>
             )}
+
+            {user?.role === 'organizer' && (
+              <NavLink to="/analytics" className={navLinkClass}>
+                {({ isActive }) => (
+                  <span className={isActive ? activeIndicator : ''}>Analytics</span>
+                )}
+              </NavLink>
+            )}
           </div>
 
           {/* Auth (Desktop) */}
@@ -114,7 +122,7 @@ const Navbar = () => {
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-pink-500 to-indigo-600 text-white hover:opacity-90 transition hover:shadow-lg"
+                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition hover:shadow-lg"
                 >
                   Logout
                 </button>
@@ -123,13 +131,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-white/10 text-fuchsia-400 hover:bg-white/20 transition"
+                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-white/10 text-purple-400 hover:bg-white/20 transition"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-fuchsia-500 to-sky-500 text-white hover:opacity-90 transition hover:shadow-md"
+                  className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition hover:shadow-md"
                 >
                   Register
                 </Link>
@@ -141,7 +149,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition"
+              className="p-2.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-800/50 transition"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -160,7 +168,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-black/80 backdrop-blur-xl border-t border-gray-800">
+        <div className="md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-gray-800/50">
           <div className="px-6 py-4 space-y-3">
             {['/', '/events'].map((path, i) => {
               const labels = ['Home', 'Events'];
@@ -171,8 +179,8 @@ const Navbar = () => {
                   className={({ isActive }) =>
                     `block px-4 py-2.5 text-sm font-medium rounded-md ${
                       isActive
-                        ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                     } transition`
                   }
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -188,8 +196,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `block px-4 py-2.5 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                   } transition`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -204,8 +212,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `block px-4 py-2.5 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                   } transition`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -220,8 +228,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `block px-4 py-2.5 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                   } transition`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -236,8 +244,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `block px-4 py-2.5 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                   } transition`
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -246,7 +254,23 @@ const Navbar = () => {
               </NavLink>
             )}
 
-            <div className="border-t border-gray-800 pt-4 mt-4">
+            {user?.role === 'organizer' && (
+              <NavLink
+                to="/analytics"
+                className={({ isActive }) =>
+                  `block px-4 py-2.5 text-sm font-medium rounded-md ${
+                    isActive
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                  } transition`
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Analytics
+              </NavLink>
+            )}
+
+            <div className="border-t border-gray-800/50 pt-4 mt-4">
               {user ? (
                 <>
                   <p className="text-sm text-gray-300 mb-3">
@@ -257,7 +281,7 @@ const Navbar = () => {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-sm rounded-lg bg-white/10 text-gray-200 hover:bg-white/20 transition"
+                    className="w-full text-left px-4 py-2.5 text-sm rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition"
                   >
                     Logout
                   </button>
@@ -266,14 +290,14 @@ const Navbar = () => {
                 <div className="space-y-3">
                   <Link
                     to="/login"
-                    className="block px-4 py-2.5 text-sm rounded-lg text-fuchsia-400 bg-white/10 hover:bg-white/20 transition"
+                    className="block px-4 py-2.5 text-sm rounded-lg text-purple-400 bg-white/10 hover:bg-white/20 transition"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
-                    className="block px-4 py-2.5 text-sm rounded-lg bg-gradient-to-r from-fuchsia-500 to-sky-500 text-white hover:opacity-90 transition"
+                    className="block px-4 py-2.5 text-sm rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Register

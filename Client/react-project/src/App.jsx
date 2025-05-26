@@ -17,7 +17,7 @@ import EventList from './components/events/EventList';
 import EventDetails from './components/events/EventDetails';
 import CreateEvent from './components/events/CreateEvent';
 import MyEvents from './components/events/MyEvents';
-import EventAnalytics from './components/events/EventAnalytics';
+import EventAnalytics from './pages/EventAnalytics';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminUsersPage from './components/admin/AdminUsersPage';
 import AdminEventsPage from './components/admin/AdminEventsPage';
@@ -28,39 +28,39 @@ const HomePage = () => {
   const { isAuthenticated } = useAuth();
   
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
-      <div className="text-center space-y-8">
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 text-transparent bg-clip-text">
+    <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center bg-gradient-to-b from-gray-900 via-gray-900 to-black">
+      <div className="text-center space-y-8 px-4">
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text">
           Welcome to Evently
         </h1>
         <p className="text-xl text-gray-300 max-w-2xl mx-auto">
           Your premier platform for discovering and managing events. Create, explore, and experience unforgettable moments.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
           <Link
             to="/events"
-            className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+            className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
           >
             Explore Events
           </Link>
           {isAuthenticated ? (
             <Link
               to="/profile"
-              className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+              className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-pink-500 to-red-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
             >
               Profile
             </Link>
           ) : (
             <Link
               to="/register"
-              className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+              className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg bg-gradient-to-r from-pink-500 to-red-500 text-white hover:opacity-90 transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
             >
               Get Started
             </Link>
           )}
           <Link
             to={isAuthenticated ? "/create-event" : "/login"}
-            className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg border-2 border-indigo-500 text-white hover:bg-indigo-500/10 transition-all duration-200 transform hover:scale-105"
+            className="w-full sm:w-auto px-8 py-3 text-base font-medium rounded-lg border-2 border-purple-500 text-white hover:bg-purple-500/10 transition-all duration-200 transform hover:scale-105"
           >
             {isAuthenticated ? "Create Event" : "Sign In"}
           </Link>
@@ -75,7 +75,7 @@ function App() {
     <Router>
       <AuthProvider>
         <EventProvider>
-          <div className="min-h-screen bg-gray-900">
+          <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
             <Navbar />
             <main className="min-h-[calc(100vh-64px)]">
               <Routes>
@@ -169,6 +169,8 @@ function App() {
                   }
                 />
                 
+                <Route path="/analytics" element={<PrivateRoute><EventAnalytics /></PrivateRoute>} />
+                
                 {/* Catch all route for 404 */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
@@ -179,8 +181,8 @@ function App() {
             position="top-right" 
             autoClose={3000}
             theme="dark"
-            toastClassName="bg-gray-800 text-white"
-            progressClassName="bg-indigo-500"
+            toastClassName="bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 text-white"
+            progressClassName="bg-gradient-to-r from-purple-500 to-pink-500"
           />
         </EventProvider>
       </AuthProvider>

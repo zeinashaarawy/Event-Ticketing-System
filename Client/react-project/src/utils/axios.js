@@ -102,6 +102,7 @@ export const eventAPI = {
   deleteEvent: (eventId) => api.delete(`/events/${eventId}`),
   uploadEventImage: (eventId, formData) => api.post(`/events/${eventId}/image`, formData),
   // Additional event endpoints
+  getMyEvents: () => api.get('/events/my-events'),
   getEventsByOrganizer: () => api.get('/users/events'),
   getUpcomingEvents: () => api.get('/events/upcoming'),
   getPastEvents: () => api.get('/events/past'),
