@@ -9,10 +9,14 @@ router.post('/register', registerUser);
 // User login
 router.post('/login', login);
 
-router.put('/forgetPassword', forgetPassword);
+// Forgot password (fix route and method)
+router.put('/forgot-password', forgetPassword);
 
-// Verify OTP and reset password
-router.put('/verifyOtpAndResetPassword', verifyOtpAndResetPassword);
+// Reset password with OTP (add POST route)
+router.post('/reset-password', verifyOtpAndResetPassword);
+
+// Verify OTP and reset password (legacy or alternative route)
+// router.put('/verifyOtpAndResetPassword', verifyOtpAndResetPassword);
 
 // Get current user info (protected)
 router.get('/me', protect, (req, res) => {

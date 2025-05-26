@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider, useAuth } from './context/authContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { EventProvider } from './context/eventContext';
 import Navbar from './components/shared/Navbar';
 import Footer from './components/shared/Footer';
@@ -18,7 +18,9 @@ import EventDetails from './components/events/EventDetails';
 import CreateEvent from './components/events/CreateEvent';
 import MyEvents from './components/events/MyEvents';
 import EventAnalytics from './components/events/EventAnalytics';
+import AdminDashboard from './components/admin/AdminDashboard';
 import AdminUsersPage from './components/admin/AdminUsersPage';
+import AdminEventsPage from './components/admin/AdminEventsPage';
 import EditEvent from './components/events/EditEvent';
 
 const HomePage = () => {
@@ -72,9 +74,9 @@ function App() {
     <Router>
       <AuthProvider>
         <EventProvider>
-          <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+          <div className="min-h-screen bg-gray-900">
             <Navbar />
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="min-h-[calc(100vh-64px)]">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
@@ -82,10 +84,10 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPasswordForm />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
+                
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 
-                {/* Event Management Routes */}
                 <Route
                   path="/create-event"
                   element={
@@ -94,6 +96,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 <Route
                   path="/my-events"
                   element={
@@ -102,6 +105,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 <Route
                   path="/events/:id/edit"
                   element={
@@ -110,6 +114,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 <Route
                   path="/events/:id/analytics"
                   element={
@@ -133,7 +138,7 @@ function App() {
                   path="/admin"
                   element={
                     <PrivateRoute adminOnly>
-                      <Navigate to="/admin/users" replace />
+                      <AdminDashboard />
                     </PrivateRoute>
                   }
                 />
@@ -145,6 +150,15 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                <Route
+                  path="/admin/events"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <AdminEventsPage />
+                    </PrivateRoute>
+                  }
+                />
+                
                 {/* Catch all route for 404 */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

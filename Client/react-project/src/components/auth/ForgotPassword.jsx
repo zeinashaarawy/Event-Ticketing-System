@@ -11,7 +11,6 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState('email'); // email, otp, or reset
-  const [generatedOtp, setGeneratedOtp] = useState(''); // Store the OTP from response
   const { forgotPassword } = useAuth();
   const navigate = useNavigate();
 
@@ -24,31 +23,14 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      console.log('Sending forgot password request for email:', email);
       const result = await forgotPassword(email);
-      console.log('Forgot password result:', result);
-      
       if (result.success || result.message) {
-        // Extract OTP from message (format: "OTP generated: 123456 ")
-        const otpMatch = result.message.match(/OTP generated: (\S+)/);
-        console.log('OTP match:', otpMatch);
-        
-        if (otpMatch && otpMatch[1]) {
-          const extractedOtp = otpMatch[1].trim();
-          console.log('Extracted OTP:', extractedOtp);
-          setGeneratedOtp(extractedOtp);
-          setOtp(extractedOtp);
-          setStep('otp');
-          toast.success('OTP has been generated');
-        } else {
-          console.error('Failed to extract OTP from message:', result.message);
-          toast.error('Failed to generate OTP. Please try again.');
-        }
+        setStep('otp'); // Move to OTP step
+        toast.success('OTP has been sent to your email');
       } else {
         toast.error(result.error || 'Failed to generate OTP. Please try again.');
       }
     } catch (error) {
-      console.error('Forgot password error:', error);
       toast.error(
         error.response?.data?.message || 
         error.message || 
@@ -74,7 +56,8 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const response = await authAPI.resetPassword(email, {
+      const response = await authAPI.resetPassword({
+        email,
         otp,
         newPassword
       });
@@ -103,18 +86,7 @@ const ForgotPassword = () => {
               Reset your password
             </h2>
             <p className="mt-2 text-center text-sm text-gray-400">
-              Enter the OTP and your new password
-            </p>
-          </div>
-          <div className="bg-indigo-900/50 p-6 rounded-lg border border-indigo-500/50">
-            <p className="text-center text-gray-200">
-              Your OTP Code:
-            </p>
-            <p className="text-center font-mono text-2xl font-bold text-indigo-400 mt-2">
-              {generatedOtp || 'Loading...'}
-            </p>
-            <p className="text-xs text-center text-gray-400 mt-2">
-              This code has been automatically filled in the form below
+              Enter the OTP sent to your email and your new password
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleResetSubmit}>
