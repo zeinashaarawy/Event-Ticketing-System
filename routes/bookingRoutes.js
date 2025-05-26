@@ -5,11 +5,14 @@ const {
   bookTickets,
   getBookingDetails,
   cancelBooking,
+  getUserBookings,
 } = require('../controllers/bookingController');
+
+// Get all bookings for the current user
+router.get('/users/bookings', protect, authorizeRoles('user'), getUserBookings);
 
 // Book tickets
 router.post('/', protect, authorizeRoles('user'), bookTickets);
-
 
 // Get booking details by ID
 router.get('/:id', protect, authorizeRoles('user'), getBookingDetails);

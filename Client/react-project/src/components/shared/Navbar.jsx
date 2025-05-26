@@ -80,6 +80,14 @@ const Navbar = () => {
               </NavLink>
             )}
 
+            {user && (
+              <NavLink to="/my-bookings" className={navLinkClass}>
+                {({ isActive }) => (
+                  <span className={isActive ? activeIndicator : ''}>My Bookings</span>
+                )}
+              </NavLink>
+            )}
+
             {user?.role === 'admin' && (
               <NavLink to="/admin" className={navLinkClass}>
                 {({ isActive }) => (
@@ -187,6 +195,22 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 My Events
+              </NavLink>
+            )}
+
+            {user && (
+              <NavLink
+                to="/my-bookings"
+                className={({ isActive }) =>
+                  `block px-4 py-2.5 text-sm font-medium rounded-md ${
+                    isActive
+                      ? 'bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                  } transition`
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                My Bookings
               </NavLink>
             )}
 

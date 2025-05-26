@@ -22,6 +22,7 @@ import AdminDashboard from './components/admin/AdminDashboard';
 import AdminUsersPage from './components/admin/AdminUsersPage';
 import AdminEventsPage from './components/admin/AdminEventsPage';
 import EditEvent from './components/events/EditEvent';
+import UserBookingsPage from './pages/UserBookingsPage';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -129,6 +130,15 @@ function App() {
                   element={
                     <PrivateRoute>
                       <ProfilePage />
+                    </PrivateRoute>
+                  }
+                />
+                
+                <Route
+                  path="/my-bookings"
+                  element={
+                    <PrivateRoute>
+                      <UserBookingsPage />
                     </PrivateRoute>
                   }
                 />

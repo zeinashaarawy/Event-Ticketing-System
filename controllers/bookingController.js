@@ -90,8 +90,25 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+// Get all bookings for the current user
+const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.user.id })
+      .populate('event', 'title date location ticketPrice')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch user bookings',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   bookTickets,
   getBookingDetails,
   cancelBooking,
+  getUserBookings,
 };
